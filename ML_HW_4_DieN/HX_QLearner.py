@@ -110,3 +110,59 @@ class QLearningTableNC:
                     name=state,
                 )
             )
+
+
+class QLearningTableDN:
+    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9, verbose=1):
+        self.actions = actions  # a list
+        self.lr = learning_rate
+        self.gamma = reward_decay
+        self.epsilon = e_greedy
+        self.q_table = pd.DataFrame(columns=self.actions, dtype=np.float64)
+        self.verbose = verbose
+        self.new_state_counter = 0
+
+    def choose_action(self, observation):
+        self.check_state_exist(observation)
+        # action selection
+        if np.random.uniform() < self.epsilon:
+            # print('\n choose best action')
+            state_action = self.q_table.loc[observation, :]
+            # print('state_action:', state_action)
+            # some actions may have the same value, randomly choose on in these actions
+            action = np.random.choice(state_action[state_action == np.max(state_action)].index)
+            # print('action:', action)
+        else:
+            # print('choose random action')
+            action = np.random.choice(self.actions)
+        # time.sleep(0.3)
+        return action
+
+    def learn(self, s, a, r, s_, alpha):
+        self.check_state_exist(s_)
+        q_predict = self.q_table.loc[s, a]
+
+        # if s_ != self.total_length:
+        # '''this problem does not have total length, remove'''
+        #     q_target = r + self.gamma * self.q_table.loc[s_, :].max()  # next state is not terminal
+        # else:
+        #     q_target = r  # next state is terminal
+        q_target = r + self.gamma * self.q_table.loc[s_, :].max()  # next state is not terminal
+        # self.q_table.loc[s, a] += self.lr * (q_target - q_predict)  # update , Morvan's original
+        self.q_table.loc[s, a] += alpha * (q_target - q_predict)  # update , HX self defined alpha
+
+    def check_state_exist(self, state):
+        if state not in self.q_table.index:
+            # append new state to q table
+            self.new_state_counter += 1
+            self.q_table = self.q_table.append(
+                pd.Series(
+                    [0]*len(self.actions),
+                    index=self.q_table.columns,
+                    name=state,
+                )
+            )
+            if self.verbose >= 1:
+                print('========adding', self.new_state_counter,'th new state====== : ', state)
+            if self.verbose >= 2:
+                print('\n Q table is:\n', self.q_table)

@@ -7,6 +7,7 @@ import pandas as pd
 import gym
 from gym import wrappers
 from HX_maze import generate_random_map, FrozenLakeEnv
+from HX_DieN import DieNEnv
 from stocks_env import StocksEnv
 import time
 
@@ -107,7 +108,7 @@ class VI:
         action_values = np.zeros(self.env.nA)
         for a in range(self.env.nA):
             for prob, next_state, reward, done in self.env.P[s][a]:
-                # print('prob:', prob, '\ns_:', next_state, '\nr:', reward, '\ndone:', done)
+                # print('prob:', prob, 's_:', next_state, 'r:', reward, 'done:', done)
                 action_values[a] += prob * (reward + gamma * V[next_state])
         return np.argmax(action_values), np.max(action_values)
 
@@ -138,24 +139,38 @@ class VI:
 
 
 if __name__ == '__main__':
-    env_name  = 'FrozenLake8x8-v0'
-    env = gym.make(env_name)
-    vi = VI(env)
-    optimal_policy = vi.optimize(gamma=1)
-    policy_score = evaluate_policy(env, optimal_policy, n=1)
-    print('Policy average score = ', policy_score)
-    print('end')
-    '''===========stocks==========='''
+    '''===========DieN==========='''
     '''obs, reward, done , _ = env.step(int(policy[obs]))'''
 
-    env_AT = StocksEnv(df=pd.read_csv('IBM.csv'),frame_bound=(50, 100), window_size=10)
-    print(env_AT.nA)
-    print(env_AT.nS)
-    print("==========================")
-    print(env_AT.P)
-    print("==========================")
-    vi_AT = VI(env_AT)
-    optimal_policy_AT = vi_AT.optimize(gamma=1)
-    policy_score = evaluate_policy_stock(env_AT, optimal_policy_AT, n=1000)
+    env_DN = DieNEnv(gym.Env)
+    print(env_DN.nA)
+    print(env_DN.nS)
+    # print("==========================")
+    # print(env_DN.P)
+    # print("==========================")
+    vi_DN = VI(env_DN)
+    optimal_policy_DN = vi_DN.optimize(gamma=1)
+    policy_score = evaluate_policy_stock(env_DN, optimal_policy_DN, n=1000)
     print('Policy average score = ', policy_score)
+    # '''===========Frozenlake==========='''
+    # env_name  = 'FrozenLake8x8-v0'
+    # env = gym.make(env_name)
+    # vi = VI(env)
+    # optimal_policy = vi.optimize(gamma=1)
+    # policy_score = evaluate_policy(env, optimal_policy, n=1)
+    # print('Policy average score = ', policy_score)
+    # print('end')
+    # '''===========stocks==========='''
+    # '''obs, reward, done , _ = env.step(int(policy[obs]))'''
+    #
+    # env_AT = StocksEnv(df=pd.read_csv('IBM.csv'),frame_bound=(50, 100), window_size=10)
+    # print(env_AT.nA)
+    # print(env_AT.nS)
+    # print("==========================")
+    # print(env_AT.P)
+    # print("==========================")
+    # vi_AT = VI(env_AT)
+    # optimal_policy_AT = vi_AT.optimize(gamma=1)
+    # policy_score = evaluate_policy_stock(env_AT, optimal_policy_AT, n=1000)
+    # print('Policy average score = ', policy_score)
 

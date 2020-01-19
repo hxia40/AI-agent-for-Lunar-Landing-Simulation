@@ -7,6 +7,7 @@ import pandas as pd
 import gym
 from gym import wrappers
 from stocks_env import StocksEnv
+from HX_DieN import DieNEnv
 import time
 from HX_maze import generate_random_map, FrozenLakeEnv
 
@@ -161,18 +162,27 @@ class PI:
 
 
 if __name__ == '__main__':
-    env_name  = 'FrozenLake8x8-v0'
-    env = gym.make(env_name)
-
-    pi = PI(env)
-    optimal_policy = pi.optimize(gamma=1)
-    policy_score = evaluate_policy(env, optimal_policy, n=1000)
+    '''===========DieN==========='''
+    env_DN = DieNEnv(gym.Env)
+    print(env_DN.nA)
+    print(env_DN.nS)
+    pi_DN = PI(env_DN)
+    optimal_policy_DN = pi_DN.optimize(gamma=1)
+    policy_score = evaluate_policy_stock(env_DN, optimal_policy_DN, n=1000)
     print('Policy average score = ', policy_score)
-    '''===========stocks==========='''
-    env_AT = StocksEnv(df=pd.read_csv('SPY.csv'),frame_bound=(50, 100), window_size=10)
-    print(env_AT.nA)
-    print(env_AT.nS)
-    pi_AT = PI(env_AT)
-    optimal_policy_AT = pi_AT.optimize(gamma=1)
-    policy_score = evaluate_policy_stock(env_AT, optimal_policy_AT, n=1000)
-    print('Policy average score = ', policy_score)
+    # '''===========Frozenlake==========='''
+    # env_name  = 'FrozenLake8x8-v0'
+    # env = gym.make(env_name)
+    #
+    # pi = PI(env)
+    # optimal_policy = pi.optimize(gamma=1)
+    # policy_score = evaluate_policy(env, optimal_policy, n=1000)
+    # print('Policy average score = ', policy_score)
+    # '''===========stocks==========='''
+    # env_AT = StocksEnv(df=pd.read_csv('SPY.csv'),frame_bound=(50, 100), window_size=10)
+    # print(env_AT.nA)
+    # print(env_AT.nS)
+    # pi_AT = PI(env_AT)
+    # optimal_policy_AT = pi_AT.optimize(gamma=1)
+    # policy_score = evaluate_policy_stock(env_AT, optimal_policy_AT, n=1000)
+    # print('Policy average score = ', policy_score)

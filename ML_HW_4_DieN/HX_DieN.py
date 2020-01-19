@@ -1,8 +1,9 @@
 import gym
 from gym import spaces
 from gym.utils import seeding
+import numpy as np
 
-class DieN(gym.Env):
+class DieNEnv(gym.Env):
     """
     This game DieN MDP is made for solving the DieN problem in class CS7642-2020 Spring of GIT -Hui Xia
 
@@ -33,6 +34,31 @@ class DieN(gym.Env):
         self.action_space = spaces.Discrete(2)  # roll dice to risk more(action=1) or quit & get all money (action=0)
         self.observation_space = spaces.Discrete(self.n)
         self.seed()
+        self.nA = 2
+        self.nS = 200
+        self.P = {s: {a: [] for a in range(self.nA)} for s in range(self.nS)}
+        for s in range(self.nS):
+                for a in range(self.nA):
+                    self.state = s
+                    li = self.P[s][a]
+
+                    # next_state = s + 1
+
+                    if a == 0 or s >= self.nS - len(self.isBadSide):
+                        next_state = 0
+                        step_reward = s
+                        li.append((1.0, next_state, step_reward, True))     # chance, new state, reward, done
+                    else:
+                        for roll in range(len((self.isBadSide))):
+                            if self.isBadSide[roll] == 0:        # rolling on a good side
+                                next_state = s + roll + 1
+                                step_reward = roll + 1
+                                li.append((1.0/len(self.isBadSide), next_state, step_reward, False))
+                            else:  # rolling on a good side
+                                next_state = 0
+                                step_reward = -s
+                                li.append((1.0 / len(self.isBadSide), next_state, step_reward, True))
+
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
@@ -43,18 +69,21 @@ class DieN(gym.Env):
         if self.np_random.rand() < self.slip:
             action = not action  # agent slipped, reverse action taken
         if action:  # roll dice
-            roll_result = int((np.random.randint(n, size=1)))   # roll dice, get a surface on dice
+            roll_result = int((np.random.randint(self.n, size=1)))   # roll dice, get a surface on dice
 
-            if (isBadSide[roll_result]) == 0:    # value of 0 on isBadSide will make you win
+            if (self.isBadSide[roll_result]) == 0:  # value of 0 on isBadSide will make you win the $ of side number
+
                 reward = roll_result + 1
                 self.state += reward
+                # print("====side", roll_result , "is not a bad side====, reward = ", reward, "current state = ", self.state)
                 done = False
             else:  # value of 1 on isBadSide will make you lose all your money
                 reward = -self.state
-                self.state += reward
+                # print("====side", roll_result , "is a bad side====, reward = ", reward)
                 done = True
         else:  # keep previously collected reward (i.e. keep self.state as-is) and quit
             reward = 0
+            # print("====giving up===, reward = ", reward, "total reward = ", self.state)
             done = True
 
         return self.state, reward, done, {}
