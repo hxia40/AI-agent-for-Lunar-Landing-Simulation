@@ -113,7 +113,7 @@ class VI:
         return np.argmax(action_values), np.max(action_values)
 
     def optimize(self, gamma =1):
-        THETA = 1e-10
+        THETA = 5
         delta = float("inf")
         round_num = 0
 
@@ -143,13 +143,19 @@ if __name__ == '__main__':
     '''obs, reward, done , _ = env.step(int(policy[obs]))'''
 
     env_DN = DieNEnv(gym.Env)
+    env_DN.slip = 0
+    env_DN.isBadSide = [1, 1, 1, 0, 0, 0]
+    # env_DN.isBadSide = [1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0]
+    env_DN.n = len(env_DN.isBadSide)
     print(env_DN.nA)
     print(env_DN.nS)
+    print(env_DN.isBadSide)
     # print("==========================")
     # print(env_DN.P)
     # print("==========================")
     vi_DN = VI(env_DN)
     optimal_policy_DN = vi_DN.optimize(gamma=1)
+
     policy_score = evaluate_policy_stock(env_DN, optimal_policy_DN, n=1000)
     print('Policy average score = ', policy_score)
     # '''===========Frozenlake==========='''
