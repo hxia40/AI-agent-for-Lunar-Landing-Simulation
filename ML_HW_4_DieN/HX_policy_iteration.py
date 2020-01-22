@@ -106,13 +106,13 @@ class PI:
 
     def policy_evaluation(self, policy, gamma):
         V = np.zeros(self.env.nS)
-        THETA = 1e-10
+        THETA = 5
         delta = float("inf")
         round_num = 0
 
         while delta > THETA:
-
             delta = 0
+            print("delta", delta)
             for s in range(self.env.nS):
                 expected_value = 0
                 for action, action_prob in enumerate(policy[s]):
@@ -163,12 +163,24 @@ class PI:
 
 if __name__ == '__main__':
     '''===========DieN==========='''
-    env_DN = DieNEnv(gym.Env)
-    print(env_DN.nA)
+    '''obs, reward, done , _ = env.step(int(policy[obs]))'''
+    isBadSide = [1, 1, 1, 0, 0, 0]
+    # isBadSide = [1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0]
+    numbb = len(isBadSide)
+    env_DN = DieNEnv(numbb=numbb,
+                     isBadSide=isBadSide,
+                     slip=0)
+
+    print(env_DN.numbb)
     print(env_DN.nS)
+    print(env_DN.isBadSide)
+    # print("==========================")
+    # print(env_DN.P)
+    # print("==========================")
     pi_DN = PI(env_DN)
     optimal_policy_DN = pi_DN.optimize(gamma=1)
-    policy_score = evaluate_policy_stock(env_DN, optimal_policy_DN, n=1000)
+
+    policy_score = evaluate_policy(env_DN, optimal_policy_DN, n=1000)
     print('Policy average score = ', policy_score)
     # '''===========Frozenlake==========='''
     # env_name  = 'FrozenLake8x8-v0'

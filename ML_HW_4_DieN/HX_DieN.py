@@ -26,18 +26,28 @@ class DieNEnv():
             i. You keep all the money gained from previous rolls and the game ends.
 
     """
-    def __init__(self,  n=6, isBadSide=[1, 1, 1, 0, 0, 0], slip=0):
-        self.n = n                  # a die with N sides
+    def __init__(self,
+                 numbb=6,
+                 isBadSide=[1, 1, 1, 0, 0, 0],
+                 slip=0
+                 ):
+        self.numbb = numbb              # a die with N sides
         self.isBadSide = isBadSide  # A Boolean mask, value of 1 indicates the sides of the die that will make you lose.
         self.slip = slip  # probability of 'slipping' an action, by default equal to 0 in the homework
         self.state = 0              # State start at 0 dollars
         self.action_space = spaces.Discrete(2)  # roll dice to risk more(action=1) or quit & get all money (action=0)
-        self.observation_space = spaces.Discrete(self.n)
+        self.observation_space = spaces.Discrete(self.numbb)
         self.seed()
         self.nA = 2
+<<<<<<< HEAD
         self.nS = 100
         self.P = {s: {a: [] for a in range(self.nA)} for s in range(self.nS)}
         print("====innerloop:", self.n,self.isBadSide , "========="  )
+=======
+        self.nS = 1000000
+        self.P = {s: {a: [] for a in range(self.nA)} for s in range(self.nS)}
+        # print("==========in the DieN=======", self.numbb, self.isBadSide)
+>>>>>>> 820eea75b3e5db389b79c0166f572c317849e5a3
         for s in range(self.nS):
                 for a in range(self.nA):
                     self.state = s
@@ -59,6 +69,7 @@ class DieNEnv():
                                 next_state = 0
                                 step_reward = -s
                                 li.append((1.0 / len(self.isBadSide), next_state, step_reward, True))
+        # print("==========in the DieN back=======", self.numbb, self.isBadSide)
 
 
     def seed(self, seed=None):
@@ -70,7 +81,7 @@ class DieNEnv():
         if self.np_random.rand() < self.slip:
             action = not action  # agent slipped, reverse action taken
         if action:  # roll dice
-            roll_result = int((np.random.randint(self.n, size=1)))   # roll dice, get a surface on dice
+            roll_result = int((np.random.randint(self.numbb, size=1)))   # roll dice, get a surface on dice
 
             if (self.isBadSide[roll_result]) == 0:  # value of 0 on isBadSide will make you win the $ of side number
 
