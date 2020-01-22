@@ -3,7 +3,7 @@ from gym import spaces
 from gym.utils import seeding
 import numpy as np
 
-class DieNEnv(gym.Env):
+class DieNEnv():
     """
     This game DieN MDP is made for solving the DieN problem in class CS7642-2020 Spring of GIT -Hui Xia
 
@@ -35,8 +35,9 @@ class DieNEnv(gym.Env):
         self.observation_space = spaces.Discrete(self.n)
         self.seed()
         self.nA = 2
-        self.nS = 200
+        self.nS = 100
         self.P = {s: {a: [] for a in range(self.nA)} for s in range(self.nS)}
+        print("====innerloop:", self.n,self.isBadSide , "========="  )
         for s in range(self.nS):
                 for a in range(self.nA):
                     self.state = s

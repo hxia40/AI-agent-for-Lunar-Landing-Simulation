@@ -3,12 +3,12 @@ Solving environment using Value Itertion.
 Author : Wei Feng
 """
 import numpy as np
+np.set_printoptions(threshold=np.inf)
 import pandas as pd
 import gym
 from gym import wrappers
 from HX_maze import generate_random_map, FrozenLakeEnv
 from HX_DieN import DieNEnv
-from stocks_env import StocksEnv
 import time
 
 def run_episode(env, policy, gamma = 1.0, render = False):
@@ -47,9 +47,19 @@ def evaluate_policy(env, policy, gamma = 1.0,  n = 1000):
     returns:
     average total reward
     """
-    scores = [
-            run_episode(env, policy, gamma = gamma, render = False)
-            for _ in range(n)]
+    start_time = time.time()
+    scores = []
+    for _ in range(n):
+        if _ % (n/100) == 0:
+            print("=====sample went through =====", _)
+        scores.append(run_episode(env, policy, gamma = gamma, render = False))
+
+
+    # # scores = [
+    # #         run_episode(env, policy, gamma = gamma, render = False)
+    # #         for _ in range(n)]
+    end_time = time.time() - start_time
+    print("time consumed for n=%d is %d") %(n, end_time)
     return np.mean(scores)
 
 def run_episode_stock(env, policy, gamma = 1.0, render = False):
@@ -113,11 +123,12 @@ class VI:
         return np.argmax(action_values), np.max(action_values)
 
     def optimize(self, gamma =1):
-        THETA = 5
+        # THETA = 12.3636363637
         delta = float("inf")
+        last_delta = float("inf")
         round_num = 0
 
-        while delta > THETA:
+        while delta:
             start_time = time.time()
             delta = 0
             # print("\nValue Iteration: Round " + str(round_num))
@@ -126,37 +137,46 @@ class VI:
                 best_action, best_action_value = self.next_best_action(s, self.V, gamma)
                 delta = max(delta, np.abs(best_action_value - self.V[s]))
                 self.V[s] = best_action_value
-            round_num += 1
-            print('round_num/delta/time:', round_num, delta, time.time()-start_time)
+            if last_delta/delta < 1.000000000000000000001:
+                break
+            else:
+                round_num += 1
+                last_delta = delta
+                print('round_num/delta/time:', round_num, delta, time.time()-start_time)
 
         policy = np.zeros(self.env.nS)
         for s in range(self.env.nS):
             best_action, best_action_value = self.next_best_action(s, self.V, gamma)
             policy[s] = best_action
         print('VI policy:', policy)
-        print('VI table:', self.V)
+        # print('VI table:', self.V)
         return policy
 
 
 if __name__ == '__main__':
     '''===========DieN==========='''
     '''obs, reward, done , _ = env.step(int(policy[obs]))'''
-
-    env_DN = DieNEnv(gym.Env)
+    # isBadSide = [1, 1, 1, 0, 0, 0]
+    # isBadSide = [1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0]
+    isBadSide = [1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0]
+    n = len(isBadSide)
+    slip=0
+    env_DN = DieNEnv(n=n, isBadSide=isBadSide, slip=slip)
     env_DN.slip = 0
-    env_DN.isBadSide = [1, 1, 1, 0, 0, 0]
-    # env_DN.isBadSide = [1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0]
-    env_DN.n = len(env_DN.isBadSide)
-    print(env_DN.nA)
-    print(env_DN.nS)
-    print(env_DN.isBadSide)
+
+    # print(env_DN.nA)
+    # print(env_DN.nS)
+    # print(env_DN.isBadSide)
     # print("==========================")
     # print(env_DN.P)
     # print("==========================")
     vi_DN = VI(env_DN)
     optimal_policy_DN = vi_DN.optimize(gamma=1)
 
-    policy_score = evaluate_policy_stock(env_DN, optimal_policy_DN, n=1000)
+    policy_score = evaluate_policy(env_DN, optimal_policy_DN,
+                                   n = 1000
+                                   # n=600000000
+                                   )
     print('Policy average score = ', policy_score)
     # '''===========Frozenlake==========='''
     # env_name  = 'FrozenLake8x8-v0'
