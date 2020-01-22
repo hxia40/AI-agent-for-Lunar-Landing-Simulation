@@ -30,7 +30,6 @@ def run_episode(env, policy, gamma = 1.0, render = False):
         if render:
             env.render()
         obs, reward, done , _ = env.step(int(policy[obs]))
-        print(obs, reward)
 
         # total_reward += (gamma ** step_idx * reward)
         # the above code is from Moustafa Alzantot , which this is problematic.
@@ -39,12 +38,11 @@ def run_episode(env, policy, gamma = 1.0, render = False):
         total_reward += reward    # HX
         step_idx += 1
         if done:
-            print('done')
             break
     # print "total_reward:", total_reward
     return total_reward
 
-def evaluate_policy(env, policy, gamma = 1.0,  n = 10):
+def evaluate_policy(env, policy, gamma = 1.0,  n = 1000):
     """ Evaluates a policy by running it n times.
     returns:
     average total reward
@@ -125,11 +123,7 @@ class VI:
         return np.argmax(action_values), np.max(action_values)
 
     def optimize(self, gamma =1):
-<<<<<<< HEAD
         # THETA = 12.3636363637
-=======
-        THETA = 13.23543
->>>>>>> 820eea75b3e5db389b79c0166f572c317849e5a3
         delta = float("inf")
         last_delta = float("inf")
         round_num = 0
@@ -163,7 +157,6 @@ if __name__ == '__main__':
     '''===========DieN==========='''
     '''obs, reward, done , _ = env.step(int(policy[obs]))'''
     # isBadSide = [1, 1, 1, 0, 0, 0]
-<<<<<<< HEAD
     # isBadSide = [1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0]
     isBadSide = [1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0]
     n = len(isBadSide)
@@ -174,32 +167,16 @@ if __name__ == '__main__':
     # print(env_DN.nA)
     # print(env_DN.nS)
     # print(env_DN.isBadSide)
-=======
-    isBadSide = [1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0]
-    numbb = len(isBadSide)
-    env_DN = DieNEnv(numbb=numbb,
-                     isBadSide=isBadSide,
-                     slip=0)
-
-
-    print(env_DN.numbb)
-    print(env_DN.nS)
-    print(env_DN.isBadSide)
->>>>>>> 820eea75b3e5db389b79c0166f572c317849e5a3
     # print("==========================")
     # print(env_DN.P)
     # print("==========================")
     vi_DN = VI(env_DN)
     optimal_policy_DN = vi_DN.optimize(gamma=1)
 
-<<<<<<< HEAD
     policy_score = evaluate_policy(env_DN, optimal_policy_DN,
                                    n = 1000
                                    # n=600000000
                                    )
-=======
-    policy_score = evaluate_policy(env_DN, optimal_policy_DN, n=1000)
->>>>>>> 820eea75b3e5db389b79c0166f572c317849e5a3
     print('Policy average score = ', policy_score)
     # '''===========Frozenlake==========='''
     # env_name  = 'FrozenLake8x8-v0'
