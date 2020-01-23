@@ -158,7 +158,18 @@ if __name__ == '__main__':
     '''obs, reward, done , _ = env.step(int(policy[obs]))'''
     # isBadSide = [1, 1, 1, 0, 0, 0]
     # isBadSide = [1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0]
-    isBadSide = [1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0]
+    # isBadSide = [1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0]
+
+    # isBadSide = [0,1,1,0]   # 1.4530781083333333
+    isBadSide = [0,0,1,0,1,0,1,1,0,1,0,0]
+    # isBadSide = [0,0,0,1]
+    # isBadSide = [0,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1]
+    # isBadSide = [0,1,1,0,0,1,0,0,1,1,1,0,1,0,1,0,1,0,1]
+    # isBadSide = [0,1,0,1,0,1,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,1,1,1,0,1]
+    # isBadSide = [0,0,1,1,1,0,0,0,1,0]
+    # isBadSide = [0,0,1,0,1,0,1,1,0]
+    # isBadSide = [0,0,1,0,1,0,1,1,0,1,1,1,1,1,0,1,0]
+    # isBadSide = [0,0,1,1,0,0,0,0,1,0,1,1,1,0,1,0,1,1]
     n = len(isBadSide)
     slip=0
     env_DN = DieNEnv(n=n, isBadSide=isBadSide, slip=slip)
@@ -174,8 +185,8 @@ if __name__ == '__main__':
     optimal_policy_DN = vi_DN.optimize(gamma=1)
 
     policy_score = evaluate_policy(env_DN, optimal_policy_DN,
-                                   n = 1000
-                                   # n=600000000
+                                   # n = 1000
+                                   n=600000000
                                    )
     print('Policy average score = ', policy_score)
     # '''===========Frozenlake==========='''
