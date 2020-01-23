@@ -137,7 +137,7 @@ class VI:
                 best_action, best_action_value = self.next_best_action(s, self.V, gamma)
                 delta = max(delta, np.abs(best_action_value - self.V[s]))
                 self.V[s] = best_action_value
-            if last_delta/delta < 1.000000000000000000001:
+            if last_delta/delta < 1.0000000000001:
                 break
             else:
                 round_num += 1
@@ -161,15 +161,27 @@ if __name__ == '__main__':
     # isBadSide = [1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0]
 
     # isBadSide = [0,1,1,0]   # 1.4530781083333333
-    isBadSide = [0,0,1,0,1,0,1,1,0,1,0,0]
+    # isBadSide = [0,0,1,0,1,0,1,1,0,1,0,0]   # 4.695342123333333
     # isBadSide = [0,0,0,1]
-    # isBadSide = [0,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1]
+    # isBadSide = [0,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1]   # 0.94540250999999997
     # isBadSide = [0,1,1,0,0,1,0,0,1,1,1,0,1,0,1,0,1,0,1]
-    # isBadSide = [0,1,0,1,0,1,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,1,1,1,0,1]
+    # isBadSide = [0,1,0,1,0,1,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,1,1,1,0,1]      # 8.6673006816666671)
     # isBadSide = [0,0,1,1,1,0,0,0,1,0]
     # isBadSide = [0,0,1,0,1,0,1,1,0]
     # isBadSide = [0,0,1,0,1,0,1,1,0,1,1,1,1,1,0,1,0]
     # isBadSide = [0,0,1,1,0,0,0,0,1,0,1,1,1,0,1,0,1,1]
+
+    isBadSide = [0,0,1,1,0,0,0,0,1,0,1,1,1,0,1,0,1,1]
+    # isBadSide = [0,0,0,1,1,0,0,0,0,0,1,0,1,0]
+    # isBadSide = [0,0,1,1,0,1,1]
+    # isBadSide = [0,0,0,0,1,1,1,1,1,1,0,0,0,0,1]
+    # isBadSide = [0,0,1,0,0,0,1,0,1,0,0,1,0,0,0,0,0,0,1,1,1,1]
+    # isBadSide = [0,1,1,0,0,1,1]
+    # isBadSide = [0,1,0,0,0,0,1,1,0,0,0,0,1,1,0,0,1,0,1,0,1,1,0]
+    # isBadSide = [0,1]
+    # isBadSide = [0,1,0,0,0,0,1,1,1,0,1,0,0,1,1,0,0,0,1,0,1,0,0,0,0,1,0,1]
+    # isBadSide = [0,0,1,0,1,0,1,1,0]
+
     n = len(isBadSide)
     slip=0
     env_DN = DieNEnv(n=n, isBadSide=isBadSide, slip=slip)
