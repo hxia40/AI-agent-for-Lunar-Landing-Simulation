@@ -149,15 +149,15 @@ class VI:
             best_action, best_action_value = self.next_best_action(s, self.V, gamma)
             policy[s] = best_action
         print('VI policy:', policy)
-        # print('VI table:', self.V)
+        print('VI table:', self.V)
         return policy
 
 
 if __name__ == '__main__':
     '''===========DieN==========='''
     '''obs, reward, done , _ = env.step(int(policy[obs]))'''
-    # isBadSide = [1, 1, 1, 0, 0, 0]
-    # isBadSide = [1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0]
+    # isBadSide = [1, 1, 1, 1, 0, 0]
+    isBadSide = [1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0]
     # isBadSide = [1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0]
 
     # isBadSide = [0,1,1,0]   # 1.4530781083333333
@@ -171,7 +171,7 @@ if __name__ == '__main__':
     # isBadSide = [0,0,1,0,1,0,1,1,0,1,1,1,1,1,0,1,0]
     # isBadSide = [0,0,1,1,0,0,0,0,1,0,1,1,1,0,1,0,1,1]
 
-    isBadSide = [0,0,1,1,0,0,0,0,1,0,1,1,1,0,1,0,1,1]
+    # isBadSide = [0,0,1,1,0,0,0,0,1,0,1,1,1,0,1,0,1,1]
     # isBadSide = [0,0,0,1,1,0,0,0,0,0,1,0,1,0]
     # isBadSide = [0,0,1,1,0,1,1]
     # isBadSide = [0,0,0,0,1,1,1,1,1,1,0,0,0,0,1]
@@ -198,7 +198,7 @@ if __name__ == '__main__':
 
     policy_score = evaluate_policy(env_DN, optimal_policy_DN,
                                    # n = 1000
-                                   n=600000000
+                                   n=300000000
                                    )
     print('Policy average score = ', policy_score)
     # '''===========Frozenlake==========='''
