@@ -7,7 +7,6 @@ np.set_printoptions(threshold=np.inf)
 import pandas as pd
 import gym
 from gym import wrappers
-from HX_maze import generate_random_map, FrozenLakeEnv
 from HX_DieN import DieNEnv
 import time
 
@@ -59,7 +58,7 @@ def evaluate_policy(env, policy, gamma = 1.0,  n = 1000):
     # #         run_episode(env, policy, gamma = gamma, render = False)
     # #         for _ in range(n)]
     end_time = time.time() - start_time
-    print("time consumed for n=%d is %d") %(n, end_time)
+    print(("time consumed for n=%d is %d") %(n, end_time))
     return np.mean(scores)
 
 def run_episode_stock(env, policy, gamma = 1.0, render = False):
@@ -197,8 +196,8 @@ if __name__ == '__main__':
     optimal_policy_DN = vi_DN.optimize(gamma=1)
 
     policy_score = evaluate_policy(env_DN, optimal_policy_DN,
-                                   # n = 1000
-                                   n=300000000
+                                   n = 1000
+                                   # n=600000000
                                    )
     print('Policy average score = ', policy_score)
     # '''===========Frozenlake==========='''
