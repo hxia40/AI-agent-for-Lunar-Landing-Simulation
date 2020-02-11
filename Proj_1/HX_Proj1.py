@@ -25,62 +25,95 @@ Final RMS (point on the graph) is the average of the 100 above rms measures.
 
 '''
 
-def make_seqs(num_train_set=100, num_sequences=10):
-    ls_seq = [
-        [4, 5, 6, 7],
-        [4, 5, 6, 7],
-        [4, 5, 6, 7],
-        [4, 5, 6, 7],
-        [4, 5, 6, 7],
-        [4, 5, 6, 7],
-        [4, 5, 6, 7],
-        [4, 5, 6, 7],
-        [4, 5, 6, 7],
-        [4, 5, 6, 7],
-    ]
 
-    return ls_seq
+def make_train_sets(num_train_set=100,num_sequences=10, random_seed=1):
+    np.random.seed(random_seed)
+    all_sets = []
+    for each_train_set in range(num_train_set):
+        train_set = []
+        for each_seq in range(num_sequences):
+            sequence = [4]
+            temp = 4
+            while (temp < 7) and (temp > 1):
+                temp += np.random.choice([-1, 1])
+                sequence.append(temp)
+            train_set.append(sequence)
+        all_sets.append(train_set)
+
+    return all_sets
+
+
+def FindMaxLength(listt):
+    max_length = 0
+    for i in listt:
+        for j in i:
+            max_length = max(max_length, len(j))
+    print("max_length of all sequences is:", max_length)
+
 
 def cal_TD(lambd,
-           sequence = ['D', 'C', 'D', 'E', 'F', 'G'],
-           valueEstimates = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],  # Pt here
-           rewards = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0],
+           alpha,
+           sequence = [4, 5, 6, 7],    # t = 1, 2, 3, 4, respectively for states (4, 5, 6, 7), or ('D', 'E', 'F', 'G')
+           valueEstimates = [0.5, 0.5, 0.5, 0.5, 0.5],  # omega here
+           # valueEstimates = [1, 1, 1, 1, 1],  # omega here
            gamma = 1,
-           ):
-    valueEstimates = valueEstimates
-    # play with lambda
-    lambd = lambd
-    initial_t = 1
-    # for a MDP with a the target (total time) of T, t = 0 , 1 ... T-1 = 4, as a total of 5 turns
+           ):  # returns "delta omegaT" for the whole sequence. i,e, for here, "omega t=1" + "omega t=2" + "omega t=3"
+    omega = np.array(valueEstimates)    # omega is initiated with [0.5, 0.5, 0.5, 0.5, 0.5], representing states B, C, D, E, and F
+    # convert sequence into xt (i.e. state) matrix
+    for step in range(len(sequence)):
+        if sequence[step] == 2:
+            sequence[step] = (np.array([1,0,0,0,0])).T
+        elif sequence[step] == 3:
+            sequence[step] = (np.array([0, 1, 0, 0, 0])).T
+        elif sequence[step] == 4:
+            sequence[step] = (np.array([0, 0, 1, 0, 0])).T
+        elif sequence[step] == 5:
+            sequence[step] = (np.array([0, 0, 0, 1, 0])).T
+        elif sequence[step] == 6:
+            sequence[step] = (np.array([0, 0, 0, 0, 1])).T
+        elif sequence[step] == 7:
+            sequence[step] = 1
+        elif sequence[step] == 1:
+            sequence[step] = 0
 
+    print(sequence, "\n===============")
 
-    stepped_eligibility_list = []
-    for step in sequence:
-        print("current step is at:", step)
-        # stepped_esti_list *= lambd
-        stepped_eligibility_list = [i * lambd for i in stepped_eligibility_list]
-        if step == 'B':
-            temp_omega = (np.array([1,0,0,0,0])).T
-            stepped_eligibility_list.append(temp_omega)
-        elif step == 'C':
-            temp_omega = (np.array([0,1,0,0,0])).T
-            stepped_eligibility_list.append(temp_omega)
-        elif step == 'D':
-            temp_omega = (np.array([0,0,1,0,0])).T
-            stepped_eligibility_list.append(temp_omega)
-        elif step == 'E':
-            temp_omega = (np.array([0,0,0,1,0])).T
-            stepped_eligibility_list.append(temp_omega)
-        elif step == 'F':
-            temp_omega = (np.array([0,0,0,0,1])).T
-            stepped_eligibility_list.append(temp_omega)
+    Pt = 0
+    eligibility_list = []
+    delta_omega_t_list = []
+    for step in range(len(sequence)-1):
+        t = step + 1
+
+        # calculate eligibility into combined_eligibility_list:
+        eligibility_list = [i * lambd for i in eligibility_list]
+        eligibility_list.append(sequence[step])
+        combined_eligibility_list = (np.array(eligibility_list)).sum(axis=0)
+
+        # calculate Pt and "Pt+1"
+        Pt = omega.T * sequence[step]
+        if step == len(sequence)-2:
+            print("last number!")
+            P_t_plus_1 = sequence[step+1]
         else:
-            pass
+            P_t_plus_1 = omega.T * sequence[step+1]
 
-    stepped_eligibility_list = (np.array(stepped_eligibility_list)).sum(axis = 0)
+        # calculate "delta omega t":
+        delta_omega_t = alpha * (P_t_plus_1 - Pt) * combined_eligibility_list
+        delta_omega_t_list.append(delta_omega_t)
 
+        print("for current step, t=", t,
+              ", the eligibility_list = ", combined_eligibility_list,
+              "Pt=", Pt,
+              "P_t_plus_1 =", P_t_plus_1,
+              "delta_omega_t=", delta_omega_t)
+    print("=================\ndelta_omega_t_list",delta_omega_t_list)
+    combined_delta_omega_t_list = (np.array(delta_omega_t_list)).sum(axis=0)
+    print("=================\ncombined_delta_omega_t_list",combined_delta_omega_t_list)
 
-    print('stepped_eligibility_list = \n', stepped_eligibility_list)
+    # stepped_eligibility_list = (np.array(stepped_eligibility_list)).sum(axis = 0)
+    #
+    # print('stepped_eligibility_list = \n', stepped_eligibility_list)
+
     '''
     # now we can implement equ. 12.3 in Sultan RL book. here, t = 0 (as we start t at value of 0)
     G_0_1 =  stepped_reward_list[0] + \
@@ -123,7 +156,10 @@ def cal_TD(lambd,
 
 
 if __name__ == '__main__':
-    # seq = make_sample(num_train_set=100, num_sequences=10)
-    # print(seq)
-    cal_TD(lambd = 1)
+    # all_sets = make_train_sets(num_train_set=100,num_sequences=10, random_seed=1)
+    # print(all_sets)
+    # FindMaxLength(all_sets)
+
+
+    cal_TD(lambd = 0.9, alpha = 0.01)
 
