@@ -27,6 +27,7 @@ Final RMS (point on the graph) is the average of the 100 above rms measures.
 
 
 def make_train_sets(num_train_set=100,num_sequences=10, random_seed=1):
+    # generate sequences like "454567", instead of "DEDEFG", as the former is way easier to code.
     np.random.seed(random_seed)
     all_sets = []
     for each_train_set in range(num_train_set):
@@ -51,16 +52,22 @@ def FindMaxLength(listt):
     print("max_length of all sequences is:", max_length)
 
 
+def rmse(predictions, targets):
+    return np.sqrt(((predictions - targets) ** 2).mean())
+
+
 def cal_TD(lambd,
            alpha,
            sequence = [4, 5, 6, 7],    # t = 1, 2, 3, 4, respectively for states (4, 5, 6, 7), or ('D', 'E', 'F', 'G')
            valueEstimates = [0.5, 0.5, 0.5, 0.5, 0.5],  # omega here
            # valueEstimates = [1, 1, 1, 1, 1],  # omega here
            gamma = 1,
+           verbose = 0
            ):  # returns "delta omegaT" for the whole sequence. i,e, for here, "omega t=1" + "omega t=2" + "omega t=3"
     omega = np.array(valueEstimates)    # omega is initiated with [0.5, 0.5, 0.5, 0.5, 0.5], representing states B, C, D, E, and F
     # convert sequence into xt (i.e. state) matrix
     for step in range(len(sequence)):
+        print("sequence[step]", sequence[step])
         if sequence[step] == 2:
             sequence[step] = (np.array([1,0,0,0,0])).T
         elif sequence[step] == 3:
@@ -75,8 +82,8 @@ def cal_TD(lambd,
             sequence[step] = 1
         elif sequence[step] == 1:
             sequence[step] = 0
-
-    print(sequence, "\n===============")
+    if verbose == 1:
+        print(sequence, "\n===============")
 
     Pt = 0
     eligibility_list = []
@@ -92,7 +99,8 @@ def cal_TD(lambd,
         # calculate Pt and "Pt+1"
         Pt = omega.T * sequence[step]
         if step == len(sequence)-2:
-            print("last number!")
+            if verbose == 1:
+                print("last number!")
             P_t_plus_1 = sequence[step+1]
         else:
             P_t_plus_1 = omega.T * sequence[step+1]
@@ -100,15 +108,17 @@ def cal_TD(lambd,
         # calculate "delta omega t":
         delta_omega_t = alpha * (P_t_plus_1 - Pt) * combined_eligibility_list
         delta_omega_t_list.append(delta_omega_t)
-
-        print("for current step, t=", t,
-              ", the eligibility_list = ", combined_eligibility_list,
-              "Pt=", Pt,
-              "P_t_plus_1 =", P_t_plus_1,
-              "delta_omega_t=", delta_omega_t)
-    print("=================\ndelta_omega_t_list",delta_omega_t_list)
+        if verbose == 1:
+            print("for current step, t=", t,
+                  ", the eligibility_list = ", combined_eligibility_list,
+                  "Pt=", Pt,
+                  "P_t_plus_1 =", P_t_plus_1,
+                  "delta_omega_t=", delta_omega_t)
     combined_delta_omega_t_list = (np.array(delta_omega_t_list)).sum(axis=0)
-    print("=================\ncombined_delta_omega_t_list",combined_delta_omega_t_list)
+    if verbose == 1:
+        print("=================\ndelta_omega_t_list", delta_omega_t_list)
+        print("=================\ncombined_delta_omega_t_list",combined_delta_omega_t_list)
+    return combined_delta_omega_t_list
 
     # stepped_eligibility_list = (np.array(stepped_eligibility_list)).sum(axis = 0)
     #
@@ -154,12 +164,40 @@ def cal_TD(lambd,
     '''
 
 
-
 if __name__ == '__main__':
-    # all_sets = make_train_sets(num_train_set=100,num_sequences=10, random_seed=1)
+    all_sets = make_train_sets(num_train_set=1,num_sequences=10, random_seed=1)
     # print(all_sets)
     # FindMaxLength(all_sets)
 
+    targets = [0, 1/6, 1/3, 1/2, 2/3, 5/6, 1]
+    train_set_enum = 0
+    for each_train_set in all_sets:
+        train_set_enum += 1
+        print("this is the ", train_set_enum, "th train set")
+        valueEstimates = [0.5, 0.5, 0.5, 0.5, 0.5]  # delta_omega_T should start 0.5 for all B,C,D,E,and F,until updated
+        omega_t_list = []
+        seq_enum = 0
+        while True:
+            for each_seq in each_train_set:
+                seq_enum += 1
+                print("this is the ", seq_enum, "th seq")
+                delta_omega_T = cal_TD(lambd=0.1,
+                                       alpha=0.01,
+                                       sequence=each_seq,
+                                       valueEstimates=valueEstimates,  # which is delta_omega_T
+                                       gamma=1,
+                                       verbose=0,
+                                       )
+                omega_t_list.append(delta_omega_T)
+            print("omega_t_list:",omega_t_list)
+            combined_omega_t_list = (np.array(omega_t_list)).sum(axis=0)
+            print("combined_omega_t_list:", combined_omega_t_list)
+            valueEstimates += combined_omega_t_list
+            print("valueEstimates:", valueEstimates)
 
-    cal_TD(lambd = 0.9, alpha = 0.01)
+
+        # print("converged valueEstimates is:", valueEstimates)
+        # RMS_error = rmse(predictions, targets)
+
+
 
