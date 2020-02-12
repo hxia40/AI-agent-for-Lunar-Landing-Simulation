@@ -64,12 +64,12 @@ def cal_TD(lambd,
            gamma = 1,
            verbose = 0
            ):  # returns "delta omegaT" for the whole sequence. i,e, for here, "omega t=1" + "omega t=2" + "omega t=3"
-    omega = np.array(valueEstimates)    # omega is initiated with [0.5, 0.5, 0.5, 0.5, 0.5], representing states B, C, D, E, and F
+    omega = np.array(valueEstimates)  # omega is initiated with [0.5, 0.5, 0.5, 0.5, 0.5], representing states B, C, D, E, and F
     # convert sequence into xt (i.e. state) matrix
     for step in range(len(sequence)):
-        print("sequence[step]", sequence[step])
+        # print("sequence[step]", sequence[step])
         if sequence[step] == 2:
-            sequence[step] = (np.array([1,0,0,0,0])).T
+            sequence[step] = (np.array([1, 0, 0, 0, 0])).T
         elif sequence[step] == 3:
             sequence[step] = (np.array([0, 1, 0, 0, 0])).T
         elif sequence[step] == 4:
@@ -83,7 +83,7 @@ def cal_TD(lambd,
         elif sequence[step] == 1:
             sequence[step] = 0
     if verbose == 1:
-        print(sequence, "\n===============")
+        print("this new sequence is:\n", sequence,"\n")
 
     Pt = 0
     eligibility_list = []
@@ -97,103 +97,113 @@ def cal_TD(lambd,
         combined_eligibility_list = (np.array(eligibility_list)).sum(axis=0)
 
         # calculate Pt and "Pt+1"
-        Pt = omega.T * sequence[step]
+        # print("calculate Pt and Pt+1: omega =", omega, "sequence[step]=", sequence[step])
+        Pt = np.dot(omega.T , sequence[step])
         if step == len(sequence)-2:
             if verbose == 1:
                 print("last number!")
             P_t_plus_1 = sequence[step+1]
         else:
-            P_t_plus_1 = omega.T * sequence[step+1]
+            P_t_plus_1 = np.dot(omega.T , sequence[step+1])
 
         # calculate "delta omega t":
         delta_omega_t = alpha * (P_t_plus_1 - Pt) * combined_eligibility_list
         delta_omega_t_list.append(delta_omega_t)
         if verbose == 1:
             print("for current step, t=", t,
-                  ", the eligibility_list = ", combined_eligibility_list,
-                  "Pt=", Pt,
-                  "P_t_plus_1 =", P_t_plus_1,
+                  # ", the eligibility_list = ", combined_eligibility_list, "||",
+                  "Pt=", Pt, "||",
+                  "P_t_plus_1 =", P_t_plus_1, "||",
                   "delta_omega_t=", delta_omega_t)
     combined_delta_omega_t_list = (np.array(delta_omega_t_list)).sum(axis=0)
     if verbose == 1:
-        print("=================\ndelta_omega_t_list", delta_omega_t_list)
-        print("=================\ncombined_delta_omega_t_list",combined_delta_omega_t_list)
+        print("\ncombined_delta_omega_t_list in function",combined_delta_omega_t_list, "\n-----------end---------")
     return combined_delta_omega_t_list
 
     # stepped_eligibility_list = (np.array(stepped_eligibility_list)).sum(axis = 0)
     #
     # print('stepped_eligibility_list = \n', stepped_eligibility_list)
 
-    '''
-    # now we can implement equ. 12.3 in Sultan RL book. here, t = 0 (as we start t at value of 0)
-    G_0_1 =  stepped_reward_list[0] + \
-                            (gamma ** 1) * stepped_esti_list[1] # as n = 1,  "G sub t:t+n" become "G sub 0:1",
-    # which is noted as G_0_1, using equ 12.1,  G_0_1 = lambda^0 * R1 (first item in the reward list))
-    G_0_2 = (stepped_reward_list[0] +
-                            (gamma ** 1) * stepped_reward_list[1]) + \
-                            (gamma ** 2) * stepped_esti_list[2]
 
-    G_0_3 = (stepped_reward_list[0] +
-                            (gamma ** 1) * stepped_reward_list[1] +
-                            (gamma ** 2) * stepped_reward_list[2])+ \
-                            (gamma ** 3) * stepped_esti_list[3]
-    G_0_4 =  (stepped_reward_list[0] +
-                            (gamma ** 1) * stepped_reward_list[1] +
-                            (gamma ** 2) * stepped_reward_list[2] +
-                            (gamma ** 3) * stepped_reward_list[3])+ \
-                            (gamma ** 4) * stepped_esti_list[4]
-    G_0_5 =  (stepped_reward_list[0] +
-                            (gamma ** 1) * stepped_reward_list[1] +
-                            (gamma ** 2) * stepped_reward_list[2] +
-                            (gamma ** 3) * stepped_reward_list[3] +
-                            (gamma ** 4) * stepped_reward_list[4])+ \
-                            (gamma ** 5) * stepped_esti_list[5]
-
-    # putting "G sub 0:1" to "G sub 0:5", and the conventional return Gt back to equ 12.3:
-    G_t_lambda = (1 - lambd) * (lambd ** 0 * G_0_1 +
-                                lambd ** 1 * G_0_2 +
-                                lambd ** 2 * G_0_3 +
-                                lambd ** 3 * G_0_4 +
-                                lambd ** 4 * G_0_5) + lambd ** 5 * conventional_return
-
-    print("when lambda =", lambd, ", G_t_lambda = ",  G_t_lambda)
-    # return G_t_lambda
-    return G_t_lambda - conventional_return   # actually this function should only return G_t_lambda. returnning
-    # G_t_lambda - conventional_return will make sure when lambda == 1, that is, TD(1), equal to 0, facilitating
-    # the solution of HW 2.
-    '''
+# trying to figure out on why cant loop again and again
+def GenerateCombinedWreights(train_set, lambd, alpha):
+    omega_t_list = []
+    seq_enum = 0
+    valueEstimates = [0.5, 0.5, 0.5, 0.5, 0.5]  # delta_omega_T should start 0.5 for all B,C,D,E,and F,until updated
+    for each_seq in train_set:
+        seq_enum += 1
+        print("this is the ", seq_enum, "th seq")
+        delta_omega_T = cal_TD(lambd=lambd,
+                               alpha=alpha,
+                               sequence=each_seq,
+                               valueEstimates=valueEstimates,  # which is delta_omega_T
+                               gamma=1,
+                               verbose=0,
+                               )
+        omega_t_list.append(delta_omega_T)
+    print("omega_t_list:", omega_t_list)
+    combined_omega_t_list = (np.array(omega_t_list)).sum(axis=0)
+    print("combined_omega_t_list:", combined_omega_t_list)
+    valueEstimates += combined_omega_t_list
+    print("valueEstimates:", valueEstimates)
 
 
 if __name__ == '__main__':
-    all_sets = make_train_sets(num_train_set=1,num_sequences=10, random_seed=1)
+    all_sets = make_train_sets(num_train_set=5,num_sequences=10, random_seed=3)  # somehow then num_sequence larger than 100, say 1000, the value estimate will go crazy. using a smaller alhpa helps.
     # print(all_sets)
+    # all_sets = [[[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7]]]
     # FindMaxLength(all_sets)
-
     targets = [0, 1/6, 1/3, 1/2, 2/3, 5/6, 1]
     train_set_enum = 0
+    trainset_lvl_valueEstimates_list = []
     for each_train_set in all_sets:
+        current_train_set = each_train_set.copy()
         train_set_enum += 1
-        print("this is the ", train_set_enum, "th train set")
-        valueEstimates = [0.5, 0.5, 0.5, 0.5, 0.5]  # delta_omega_T should start 0.5 for all B,C,D,E,and F,until updated
-        omega_t_list = []
+        print("this is the ", train_set_enum, "th train set, full set is:\n", each_train_set)
+        valueEstimates = np.array([0.5, 0.5, 0.5, 0.5, 0.5])  # delta_omega_T should start 0.5 for all B,C,D,E,and F,until updated
         seq_enum = 0
+        circle_enum = 0
         while True:
-            for each_seq in each_train_set:
-                seq_enum += 1
-                print("this is the ", seq_enum, "th seq")
-                delta_omega_T = cal_TD(lambd=0.1,
+            # time.sleep(0.1)
+            circle_enum += 1
+            omega_t_list = []
+            for each_seq in current_train_set:
+                # time.sleep(0.3)
+                # print(each_seq)
+                temp = each_seq.copy()
+                # seq_enum += 1
+                # print("this is the ", seq_enum, "th seq")
+                delta_omega_T = cal_TD(lambd=0.3,
+                                       # alpha=1,
                                        alpha=0.01,
-                                       sequence=each_seq,
+                                       sequence=temp,
                                        valueEstimates=valueEstimates,  # which is delta_omega_T
                                        gamma=1,
                                        verbose=0,
                                        )
+                # print("combined_delta_omega_t_list out of function:", delta_omega_T)
                 omega_t_list.append(delta_omega_T)
-            print("omega_t_list:",omega_t_list)
+            print('end of circle:', circle_enum)
+            # print("omega_t_list:",omega_t_list, "\n")
             combined_omega_t_list = (np.array(omega_t_list)).sum(axis=0)
-            print("combined_omega_t_list:", combined_omega_t_list)
+            # omega_t_list = []     # need to reset omega list to empty
+            # print("combined_omega_t_list:", combined_omega_t_list)
+            # print("valueEstimates before adding:", valueEstimates)
+            old_valueEstimates = valueEstimates.copy()
             valueEstimates += combined_omega_t_list
-            print("valueEstimates:", valueEstimates)
+            print("valueEstimates after adding:", valueEstimates)
+            delta = rmse(old_valueEstimates, valueEstimates)
+            print("delta", delta)
+            print("rmse for old and new value estimates:", old_valueEstimates, valueEstimates, delta)
+            if delta < 0.001:
+                print("delta", delta)
+                trainset_lvl_valueEstimates_list.append(valueEstimates)
+                print("breaking")
+                break
+    combined_trainset_lvl_valueEstimates_list = (np.array(trainset_lvl_valueEstimates_list)).mean(axis=0)
+    print("combined_trainset_lvl_valueEstimates_list:", combined_trainset_lvl_valueEstimates_list)
+
+
 
 
         # print("converged valueEstimates is:", valueEstimates)
