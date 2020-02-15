@@ -170,7 +170,7 @@ def Figure3Iterator(train_set, lambd, alpha):   # Generate one point of data for
     print("valueEstimates:", valueEstimates)
 
 if __name__ == '__main__':
-    all_sets = make_train_sets(num_train_set=100,num_sequences=1, random_seed=1)  # somehow then num_sequence larger than 100, say 1000, the value estimate will go crazy. using a smaller alhpa helps.
+    all_sets = make_train_sets(num_train_set=100,num_sequences=10, random_seed=1)  # somehow then num_sequence larger than 100, say 1000, the value estimate will go crazy. using a smaller alhpa helps.
     # print(all_sets)
     # all_sets = [[[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7]]]
     # FindMaxLength(all_sets)
@@ -197,7 +197,7 @@ if __name__ == '__main__':
                 seq_enum = 0
                 circle_enum = 0
 
-
+                '''updateing valueEstimates once every 1 trainning set'''
                 for each_seq in current_train_set:
                     # print(each_seq)
                     temp = each_seq.copy()

@@ -26,7 +26,7 @@ Final RMS (point on the graph) is the average of the 100 above rms measures.
 '''
 
 
-def make_train_sets(num_train_set=100,num_sequences=10, random_seed=1):
+def make_train_sets(num_train_set=100,num_sequences=10, random_seed=1, length_limit = 9999):
     # generate sequences like "454567", instead of "DEDEFG", as the former is way easier to code.
     np.random.seed(random_seed)
     all_sets = []
@@ -38,6 +38,25 @@ def make_train_sets(num_train_set=100,num_sequences=10, random_seed=1):
             while (temp < 7) and (temp > 1):
                 temp += np.random.choice([-1, 1])
                 sequence.append(temp)
+                if len(sequence) > length_limit:
+                    sequence = [4]
+                    temp = 4
+
+            train_set.append(sequence)
+        all_sets.append(train_set)
+
+    return all_sets
+
+
+def make_exact_same_train_sets(num_train_set=100,num_sequences=10, random_seed=1, length_limit = 9999):
+    # generate sequences like "454567", instead of "DEDEFG", as the former is way easier to code.
+    np.random.seed(random_seed)
+    all_sets = []
+    for each_train_set in range(num_train_set):
+        train_set = []
+        for each_seq in range(num_sequences):
+            sequence = [4,3,2,1]
+
             train_set.append(sequence)
         all_sets.append(train_set)
 
@@ -170,7 +189,9 @@ def Figure3Iterator(train_set, lambd, alpha):   # Generate one point of data for
     print("valueEstimates:", valueEstimates)
 
 if __name__ == '__main__':
-    all_sets = make_train_sets(num_train_set=100,num_sequences=1, random_seed=1)  # somehow then num_sequence larger than 100, say 1000, the value estimate will go crazy. using a smaller alhpa helps.
+    all_sets = make_train_sets(num_train_set=100,num_sequences=10, random_seed=1, length_limit = 9999)  # somehow then num_sequence larger than 100, say 1000, the value estimate will go crazy. using a smaller alhpa helps.
+    # same_sets = make_exact_same_train_sets(num_train_set=100,num_sequences=10, random_seed=1, length_limit = 9999)
+
     # print(all_sets)
     # all_sets = [[[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7]]]
     # FindMaxLength(all_sets)
@@ -181,7 +202,9 @@ if __name__ == '__main__':
         alter_alpha_list = []
         for alph_value in alph_list:
             print("lambda = ", lam_value, "alpha = ", alph_value)
-
+            '''new posisiton of valueestimates for resetting onlhy att he beginning - seems not working, 
+            also refer to piazza @291_f2, i should just reset weight after each trainning set'''
+            # valueEstimates = np.array([0.5, 0.5, 0.5, 0.5, 0.5])  # delta_omega_T should start 0.5 for all B,C,D,E,and F,until updated
             train_set_enum = 0
             for each_train_set in all_sets:
 
@@ -192,12 +215,13 @@ if __name__ == '__main__':
                 current_train_set = each_train_set.copy()
                 train_set_enum += 1
                 # print("this is the ", train_set_enum, "th train set, full set is:\n", each_train_set)
+                '''original, and adopted posisiton of valueestimates for resetting every dataset'''
                 valueEstimates = np.array([0.5, 0.5, 0.5, 0.5, 0.5])  # delta_omega_T should start 0.5 for all B,C,D,E,and F,until updated
-                # valueEstimates = np.array([0.0, 0.0, 0.0, 0.0, 0.0])  # delta_omega_T should start 0.5 for all B,C,D,E,and F,until updated
+
                 seq_enum = 0
                 circle_enum = 0
 
-
+                '''updateing valueEstimates once every 1 sequence, 10 updates per trainning set'''
                 for each_seq in current_train_set:
                     # print(each_seq)
                     temp = each_seq.copy()
@@ -211,24 +235,15 @@ if __name__ == '__main__':
                                            verbose=0,
                                            )
                     # print("combined_delta_omega_t_list out of function:", delta_omega_T)
-                    omega_t_list.append(delta_omega_T)
-                # print('end of circle:', circle_enum)
-                # print("omega_t_list:",omega_t_list, "\n")
-                combined_omega_t_list = (np.array(omega_t_list)).sum(axis=0)
-                # print("combined_omega_t_list:", combined_omega_t_list)
 
-                old_valueEstimates = valueEstimates.copy()
-                print("valueEstimates", valueEstimates)
-                valueEstimates += combined_omega_t_list
-
-                num_update +=1
-                print("num_update", num_update)
-
-                # print("valueEstimates after adding:", valueEstimates)
-                delta = rmse(old_valueEstimates, valueEstimates)
+                    old_valueEstimates = valueEstimates.copy()
+                    # print("valueEstimates", valueEstimates)
+                    valueEstimates += delta_omega_T
+                    num_update += 1
+                    # print("num_update", num_update)
+                    # print("valueEstimates after adding:", valueEstimates)
 
                 trainset_lvl_valueEstimates_list.append(valueEstimates)
-
 
             combined_trainset_lvl_valueEstimates_list = (np.array(trainset_lvl_valueEstimates_list)).mean(axis=0)
             print(" combined_trainset_lvl_valueEstimates_list:", combined_trainset_lvl_valueEstimates_list)
@@ -237,7 +252,7 @@ if __name__ == '__main__':
             point_error = rmse(targets, combined_trainset_lvl_valueEstimates_list)
             print("for a total of ", len(all_sets), "sets, the error is:", point_error)
             alter_alpha_list.append(point_error)
-            print("alter_alpha_list:", alter_alpha_list)
+            # print("alter_alpha_list:", alter_alpha_list)
         alter_lam_list.append(alter_alpha_list)
     print("alter_lam_list:", alter_lam_list)
 
@@ -255,7 +270,7 @@ if __name__ == '__main__':
     plt.ylabel("Error")
     plt.xlabel("alpha")
     plt.legend(names, fontsize=7, loc='upper left')
-    plt.savefig('figure4_rdomseed1_seq_of_1.png')
+    plt.savefig('Maxlength_9999_10updatepertrainningset_rdomseed1_seq_of_10.png')
 
 
 

@@ -170,92 +170,64 @@ def Figure3Iterator(train_set, lambd, alpha):   # Generate one point of data for
     print("valueEstimates:", valueEstimates)
 
 if __name__ == '__main__':
-    all_sets = make_train_sets(num_train_set=100,num_sequences=1, random_seed=1)  # somehow then num_sequence larger than 100, say 1000, the value estimate will go crazy. using a smaller alhpa helps.
+    all_sets = make_train_sets(num_train_set=5,num_sequences=10, random_seed=3)  # somehow then num_sequence larger than 100, say 1000, the value estimate will go crazy. using a smaller alhpa helps.
     # print(all_sets)
     # all_sets = [[[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7]]]
     # FindMaxLength(all_sets)
-    lam_list = [0.0, 0.3, 0.8, 1]
-    alph_list = [0.0, 0.05,  0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6]
-    alter_lam_list = []
-    for lam_value in lam_list:
-        alter_alpha_list = []
-        for alph_value in alph_list:
-            print("lambda = ", lam_value, "alpha = ", alph_value)
 
-            train_set_enum = 0
-            for each_train_set in all_sets:
-
-                num_update = 0
-
-                trainset_lvl_valueEstimates_list = []   # reset the rainset_lvl_valueEstimates_list for each train set
-                omega_t_list = []  # need to reset omega list to empty each time all of the trainset is done.
-                current_train_set = each_train_set.copy()
-                train_set_enum += 1
-                # print("this is the ", train_set_enum, "th train set, full set is:\n", each_train_set)
-                valueEstimates = np.array([0.5, 0.5, 0.5, 0.5, 0.5])  # delta_omega_T should start 0.5 for all B,C,D,E,and F,until updated
-                # valueEstimates = np.array([0.0, 0.0, 0.0, 0.0, 0.0])  # delta_omega_T should start 0.5 for all B,C,D,E,and F,until updated
-                seq_enum = 0
-                circle_enum = 0
-
-
-                for each_seq in current_train_set:
-                    # print(each_seq)
-                    temp = each_seq.copy()
-                    # seq_enum += 1
-                    # print("this is the ", seq_enum, "th seq")
-                    delta_omega_T = cal_TD(lambd=lam_value,
-                                           alpha=alph_value,
-                                           sequence=temp,
-                                           valueEstimates=valueEstimates,  # which is delta_omega_T
-                                           gamma=1,
-                                           verbose=0,
-                                           )
-                    # print("combined_delta_omega_t_list out of function:", delta_omega_T)
-                    omega_t_list.append(delta_omega_T)
-                # print('end of circle:', circle_enum)
-                # print("omega_t_list:",omega_t_list, "\n")
-                combined_omega_t_list = (np.array(omega_t_list)).sum(axis=0)
-                # print("combined_omega_t_list:", combined_omega_t_list)
-
-                old_valueEstimates = valueEstimates.copy()
-                print("valueEstimates", valueEstimates)
-                valueEstimates += combined_omega_t_list
-
-                num_update +=1
-                print("num_update", num_update)
-
-                # print("valueEstimates after adding:", valueEstimates)
-                delta = rmse(old_valueEstimates, valueEstimates)
-
+    train_set_enum = 0
+    trainset_lvl_valueEstimates_list = []
+    for each_train_set in all_sets:
+        current_train_set = each_train_set.copy()
+        train_set_enum += 1
+        print("this is the ", train_set_enum, "th train set, full set is:\n", each_train_set)
+        valueEstimates = np.array([0.5, 0.5, 0.5, 0.5, 0.5])  # delta_omega_T should start 0.5 for all B,C,D,E,and F,until updated
+        seq_enum = 0
+        circle_enum = 0
+        while True:
+            # time.sleep(0.1)
+            circle_enum += 1
+            omega_t_list = []
+            for each_seq in current_train_set:
+                # time.sleep(0.3)
+                # print(each_seq)
+                temp = each_seq.copy()
+                # seq_enum += 1
+                # print("this is the ", seq_enum, "th seq")
+                delta_omega_T = cal_TD(lambd=0.3,
+                                       # alpha=1,
+                                       alpha=0.01,
+                                       sequence=temp,
+                                       valueEstimates=valueEstimates,  # which is delta_omega_T
+                                       gamma=1,
+                                       verbose=0,
+                                       )
+                # print("combined_delta_omega_t_list out of function:", delta_omega_T)
+                omega_t_list.append(delta_omega_T)
+            print('end of circle:', circle_enum)
+            # print("omega_t_list:",omega_t_list, "\n")
+            combined_omega_t_list = (np.array(omega_t_list)).sum(axis=0)
+            # omega_t_list = []     # need to reset omega list to empty
+            # print("combined_omega_t_list:", combined_omega_t_list)
+            # print("valueEstimates before adding:", valueEstimates)
+            old_valueEstimates = valueEstimates.copy()
+            valueEstimates += combined_omega_t_list
+            print("valueEstimates after adding:", valueEstimates)
+            delta = rmse(old_valueEstimates, valueEstimates)
+            print("delta", delta)
+            print("rmse for old and new value estimates:", old_valueEstimates, valueEstimates, delta)
+            if delta < 0.001:
+                print("delta", delta)
                 trainset_lvl_valueEstimates_list.append(valueEstimates)
+                print("breaking")
+                break
+    combined_trainset_lvl_valueEstimates_list = (np.array(trainset_lvl_valueEstimates_list)).mean(axis=0)
+    print("combined_trainset_lvl_valueEstimates_list:", combined_trainset_lvl_valueEstimates_list)
 
+    targets = [1/6, 1/3, 1/2, 2/3, 5/6]
+    point_error = rmse(targets, combined_trainset_lvl_valueEstimates_list)
+    print("error is:", point_error)
 
-            combined_trainset_lvl_valueEstimates_list = (np.array(trainset_lvl_valueEstimates_list)).mean(axis=0)
-            print(" combined_trainset_lvl_valueEstimates_list:", combined_trainset_lvl_valueEstimates_list)
-
-            targets = [1/6, 1/3, 1/2, 2/3, 5/6]
-            point_error = rmse(targets, combined_trainset_lvl_valueEstimates_list)
-            print("for a total of ", len(all_sets), "sets, the error is:", point_error)
-            alter_alpha_list.append(point_error)
-            print("alter_alpha_list:", alter_alpha_list)
-        alter_lam_list.append(alter_alpha_list)
-    print("alter_lam_list:", alter_lam_list)
-
-    '''plotting the whole alter_lam_list:'''
-
-    plt.grid()
-    ylim = (0, 0.7)
-    plt.ylim(*ylim)
-
-    fully_nested = [list(zip(*[(ix + 1, y) for ix, y in enumerate(x)])) for x in alter_lam_list]
-    names = ['lambda=%s' % (i) for i in lam_list]
-
-    for l in fully_nested:
-        plt.plot(*l)
-    plt.ylabel("Error")
-    plt.xlabel("alpha")
-    plt.legend(names, fontsize=7, loc='upper left')
-    plt.savefig('figure4_rdomseed1_seq_of_1.png')
 
 
 
