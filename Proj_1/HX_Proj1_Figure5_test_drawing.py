@@ -189,17 +189,17 @@ def Figure3Iterator(train_set, lambd, alpha):   # Generate one point of data for
     print("valueEstimates:", valueEstimates)
 
 if __name__ == '__main__':
-    all_sets = make_train_sets(num_train_set=100,num_sequences=10, random_seed=1, length_limit = 40)  # somehow then num_sequence larger than 100, say 1000, the value estimate will go crazy. using a smaller alhpa helps.
+    all_sets = make_train_sets(num_train_set=100,num_sequences=7, random_seed=1, length_limit = 50)  # somehow then num_sequence larger than 100, say 1000, the value estimate will go crazy. using a smaller alhpa helps.
     # same_sets = make_exact_same_train_sets(num_train_set=100,num_sequences=10, random_seed=1, length_limit = 9999)
 
     # print(all_sets)
     # all_sets = [[[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7],[4, 5, 6, 7]]]
     # FindMaxLength(all_sets)
-    # lam_list = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
-    # alph_list = [0.0, 0.05,  0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6]
+    lam_list = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    alph_list = [0.0, 0.05,  0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6]
 
-    lam_list = [0.0, 0.3,  0.5 ,0.7, 1.0]
-    alph_list = [0.0,  0.2, 0.4, 0.6]
+    # lam_list = [0.0, 0.3,  0.5 ,0.7, 1.0]
+    # alph_list = [0.0,  0.2, 0.4, 0.6]
 
     alter_lam_list = []
     for lam_value in lam_list:

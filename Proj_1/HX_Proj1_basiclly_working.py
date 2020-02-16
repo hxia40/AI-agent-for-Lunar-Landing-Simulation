@@ -194,9 +194,9 @@ if __name__ == '__main__':
                 temp = each_seq.copy()
                 # seq_enum += 1
                 # print("this is the ", seq_enum, "th seq")
-                delta_omega_T = cal_TD(lambd=0.3,
+                delta_omega_T = cal_TD(lambd=0.0,
                                        # alpha=1,
-                                       alpha=0.01,
+                                       alpha=0.1/circle_enum ,
                                        sequence=temp,
                                        valueEstimates=valueEstimates,  # which is delta_omega_T
                                        gamma=1,
