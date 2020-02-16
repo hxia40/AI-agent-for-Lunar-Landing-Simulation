@@ -175,7 +175,7 @@ if __name__ == '__main__':
                     seq_enum += 1
                     # print("this is the ", seq_enum, "th seq")
                     delta_omega_T = cal_TD(lambd=each_lam,
-                                           alpha=0.1/circle_enum ,
+                                           alpha=0.01 ,
                                            sequence=temp,
                                            valueEstimates=valueEstimates,  # which is delta_omega_T
                                            gamma=1,
@@ -193,7 +193,7 @@ if __name__ == '__main__':
                 # print("valueEstimates after adding:", valueEstimates)
                 delta = rmse(old_valueEstimates, valueEstimates)
 
-                if delta <= 0.001:
+                if delta <= 0.0005:
                     # print("delta:", delta)
                     trainset_lvl_valueEstimates_list.append(valueEstimates)
                     break
@@ -214,7 +214,7 @@ if __name__ == '__main__':
 
     plt.xlabel('λ')
     plt.ylabel("ERROR")
-    plt.savefig('Figure3_alpha_0.01_delta_0.001.png')
+    plt.savefig('Figure3_alpha_0.01_delta_0.0005.png')
 
 
 
