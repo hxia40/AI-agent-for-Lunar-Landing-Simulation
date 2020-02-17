@@ -9,12 +9,11 @@ Moustafa Alzantot (malzantot@ucla.edu)
 
 """
 import numpy as np
-from HX_policy_iteration import PI
-from HX_value_iteration import VI
+# from HX_policy_iteration import PI
+# from HX_value_iteration import VI
 from HX_QLearner import QLearningTable, QLearningTableNC
-# from HX_XQL import XQLearningTable, XQLearningTableNC
-# from HX_XQPlusL import XQPlusLearningTable, XQPlusLearningTableNC
-# from HX_NChain import NChainEnv
+from HX_SARSA import SARSA_TABLE
+# from stocks_env import StocksEnv
 from HX_maze import generate_random_map, FrozenLakeEnv
 import gym
 import time
@@ -22,10 +21,10 @@ import math
 import random
 import matplotlib.pyplot as plt
 import pandas as pd
-from stocks_env import StocksEnv
 
 
-def Q_FL0(learning_rate = 0.01):
+
+def Q_FL0(learning_rate = 0.01):            # learning fromzen lake using Q-leaner
     Q_file = open('QLearner.txt', 'a')
 
     episode_list = []
@@ -226,22 +225,14 @@ def Q_AnyTrading(learning_rate = 0.01):
 
 
 if __name__ == "__main__":
-    '''AnyTrading - Q-learning'''
 
-    print("QLearning- AnyTrading")
-    # env_AT = gym.make('stocks-v0', frame_bound=(50, 100), window_size=10)
-    env_AT = StocksEnv(df=pd.read_csv('SPY.csv'),frame_bound=(50, 100), window_size=10)
-    for i in range(1):
-        QL_AnyTrading = QLearningTable(actions=list(range(env_AT.nA)),
-                                # learning_rate=0.1,
-                                reward_decay=0.99,
-                                e_greedy=1,
-                                verbose = 0)
-        Q_AnyTrading(learning_rate = 0.01)
+    '''You must train your agent with an epsilon-greedy exploration strategy, using NumPy's numpy.random.randint
+function to select random actions'''
 
     '''FromzenLake env'''
     # env_FL0 = FrozenLakeEnv(desc=generate_random_map(size=32, p=0.99), map_name=None, is_slippery=False)
-    env_FL0 = FrozenLakeEnv(desc=None, map_name='8x8', is_slippery=True)
+    env_FL0 = FrozenLakeEnv(desc=None, map_name='4x4', is_slippery=False)
+    # env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv().unwrapped
 
     '''FrozenLake - Q-learning'''
 
@@ -255,86 +246,3 @@ if __name__ == "__main__":
         Q_FL0(learning_rate = 0.1)
 
 
-    #
-    # '''FrozenLake - XQ-plus learning'''
-    #
-    # # print "XQPlusLearningTable"
-    # # for i in range(1):
-    # #     QL_FL0 = XQPlusLearningTable(actions=list(range(env_FL0.nA)),
-    # #                             # learning_rate=0.1,
-    # #                             reward_decay=0.99,
-    # #                             e_greedy=0.9,
-    # #                             exploration_decay=0.99,
-    # #                             verbose = 1)
-    # #     Q_FL0(learning_rate = 0.01)
-    #
-    # '''FrozenLake - XQ-learning'''
-    #
-    # # print "XQLearningTable"
-    # # for i in range(1):
-    # #     QL_FL0 = XQLearningTable(actions=list(range(env_FL0.nA)),
-    # #                             # learning_rate=0.1,
-    # #                             reward_decay=0.99,
-    # #                             e_greedy=0.9,
-    # #                             verbose = 1)
-    # #     Q_FL0(learning_rate = 0.01)
-    #
-    # '''NChain  Q-Learning'''
-    # # env_NC = NChainEnv(gym.Env)
-    # #
-    # # # setting of the NC environemnt. n=5, slip=0.2, small=2, large=10
-    # # env_NC.n = 1000
-    # # env_NC.slip = 0
-    # # env_NC.small = 2
-    # # env_NC.large = 1000000
-    # #
-    # # # print env_NC.n, env_NC.slip, env_NC.small, env_NC.large
-    # #
-    # # QL_NC = QLearningTableNC(actions=list(range(2)),
-    # #                          learning_rate=0.01,
-    # #                          reward_decay=0.999,
-    # #                          e_greedy=0.999,
-    # #                          total_length=env_NC.n)
-    # # Q_NC(random_seed=1)
-    # # #
-    #
-    # '''NChain  XQ-Learning'''
-    # # env_NC = NChainEnv(gym.Env)
-    # #
-    # # # setting of the NC environemnt. n=5, slip=0.2, small=2, large=10
-    # # env_NC.n = 3
-    # # env_NC.slip = 0
-    # # env_NC.small = -1
-    # # env_NC.large = 10000
-    # #
-    # # # print env_NC.n, env_NC.slip, env_NC.small, env_NC.large
-    # #
-    # # QL_NC = XQLearningTableNC(actions=list(range(2)),
-    # #                           learning_rate=0.01,
-    # #                           reward_decay=0.999,
-    # #                           e_greedy=1,
-    # #                           total_length=env_NC.n,
-    # #                           verbose=1)
-    #
-    # # Q_NC(random_seed=1)
-    #
-    # '''NChain  XQPlus-Learning'''
-    # # env_NC = NChainEnv(gym.Env)
-    # #
-    # # # setting of the NC environemnt. n=5, slip=0.2, small=2, large=10
-    # # env_NC.n = 5
-    # # env_NC.slip = 0
-    # # env_NC.small = 2
-    # # env_NC.large = 10000
-    # #
-    # # # print env_NC.n, env_NC.slip, env_NC.small, env_NC.large
-    # #
-    # # QL_NC = XQPlusLearningTableNC(actions=list(range(2)),
-    # #                           learning_rate=0.01,
-    # #                           reward_decay=0.999,
-    # #                           e_greedy=0.5,
-    # #                           total_length=env_NC.n,
-    # #                           verbose=2)
-    # #
-    # # Q_NC(random_seed=1)
-    # #
