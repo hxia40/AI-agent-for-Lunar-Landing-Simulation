@@ -189,7 +189,7 @@ def Figure3Iterator(train_set, lambd, alpha):   # Generate one point of data for
     print("valueEstimates:", valueEstimates)
 
 if __name__ == '__main__':
-    all_sets = make_train_sets(num_train_set=100,num_sequences=10, random_seed=1, length_limit = 40)  # somehow then num_sequence larger than 100, say 1000, the value estimate will go crazy. using a smaller alhpa helps.
+    all_sets = make_train_sets(num_train_set=100,num_sequences=7, random_seed=1, length_limit = 50)  # somehow then num_sequence larger than 100, say 1000, the value estimate will go crazy. using a smaller alhpa helps.
     # same_sets = make_exact_same_train_sets(num_train_set=100,num_sequences=10, random_seed=1, length_limit = 9999)
 
     # print(all_sets)
@@ -259,23 +259,23 @@ if __name__ == '__main__':
 
     '''plotting the whole alter_lam_list as Figure 4'''
 
-    plt.grid()
-    ylim = (0, 0.7)
-    plt.ylim(*ylim)
-
-    fully_nested = [list(zip(*[(ix + 1, y) for ix, y in enumerate(x)])) for x in alter_lam_list]
-    names = ['lambda=%s' % (i) for i in lam_list]
-
-    for l in fully_nested:
-        plt.plot(*l)
-    plt.ylabel("Error")
-    plt.xlabel("alpha")
-    plt.legend(names, fontsize=7, loc='upper left')
-    plt.savefig('F4_Maxlength_40_10updatepertrainningset_rdomseed1_seq_of_10.png')
-    plt.gcf().clear()
+    # plt.grid()
+    # ylim = (0, 0.7)
+    # plt.ylim(*ylim)
+    #
+    # fully_nested = [list(zip(*[(ix + 1, y) for ix, y in enumerate(x)])) for x in alter_lam_list]
+    # names = ['lambda=%s' % (i) for i in lam_list]
+    #
+    # for l in fully_nested:
+    #     plt.plot(*l)
+    # plt.ylabel("Error")
+    # plt.xlabel("alpha")
+    # plt.legend(names, fontsize=7, loc='upper left')
+    # plt.savefig('F4_Maxlength_40_10updatepertrainningset_rdomseed1_seq_of_10.png')
+    # plt.gcf().clear()
 
     '''plotting the error value at best alpha for each lambda as Figure 5'''
-
+    names = ['lambda=%s' % (i) for i in lam_list]
     plt.grid()
 
     min_error_list = []
@@ -291,7 +291,7 @@ if __name__ == '__main__':
     plt.ylabel("ERROR USING BEST α")
     plt.legend(loc="best")
     plt.legend(names, fontsize=7, loc='upper left')
-    plt.savefig('F5_Maxlength_40_10updatepertrainningset_rdomseed1_seq_of_10.png')
+    plt.savefig('Figure5_Maxlength_50_10updatepertrainningset_rdomseed1_seq_of_7.png')
 
 
 
