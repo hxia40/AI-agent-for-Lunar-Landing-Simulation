@@ -235,6 +235,11 @@ def SARSA_HW3(learning_rate = 0.01):  # learning fromzen lake using SARSA
     # env.destroy()
 
 
+def map_reshape(map_string):
+    n = int(len(amap) ** 0.5)
+    return [amap[i:i + n] for i in range(0, len(amap), n)]
+
+
 if __name__ == "__main__":
 
     '''You must train your agent with an epsilon-greedy exploration strategy, using NumPy's numpy.random.randint
@@ -242,10 +247,11 @@ function to select random actions'''
     seed = 1
     np.random.seed(seed)
 
+    amap = 'SFFFFHFFFFFFFFFFFFFFFFFFG'
+    amap_reshaped = map_reshape(amap)
     '''FromzenLake env'''
-    # env_FL0 = FrozenLakeEnv(desc=generate_random_map(size=32, p=0.99), map_name=None, is_slippery=False)
-    env_FL0 = FrozenLakeEnv(desc=None, map_name='4x4', is_slippery=False)
-    env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv().unwrapped
+    # env_FL0 = FrozenLakeEnv(desc=None, map_name='4x4', is_slippery=False)
+    env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
     env_HW3.seed(seed)
 
     '''FrozenLake - Q-learning'''
