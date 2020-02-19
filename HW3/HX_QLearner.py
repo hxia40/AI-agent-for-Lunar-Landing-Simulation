@@ -17,7 +17,7 @@ class QLearningTable:
         self.lr = learning_rate
         self.gamma = reward_decay
         self.epsilon = e_greedy
-        self.q_table = pd.DataFrame(columns=self.actions, dtype=np.float64)
+        self.q_table = pd.DataFrame(columns=self.actions, dtype=np.float64)      # Initialize S
         self.new_state_counter = 0
         self.verbose = verbose
 
@@ -31,12 +31,11 @@ class QLearningTable:
             action = np.random.choice(state_action[state_action == np.max(state_action)].index)
         else:
             # choose random action
-            action = np.random.randint(len(self.actions)) # using np.random.randint instead of np.random.choice for RL, HW 3
-            # action = np.random.choice(self.actions)
+            action = np.random.choice(self.actions)
 
         return action
 
-    def learn(self, s, a, r, s_, alpha):
+    def learn(self, s, a, r, s_, alpha):   # learning for Q learning table
         self.check_state_exist(s_)
         q_predict = self.q_table.loc[s, a]
         if s_ != 'terminal':
@@ -47,6 +46,7 @@ class QLearningTable:
         self.q_table.loc[s, a] += alpha * (q_target - q_predict)  # update , HX self defined
         if self.verbose >= 2:
             print('\n Q table is:\n', self.q_table)
+
 
     def check_state_exist(self, state):
         if state not in self.q_table.index:
