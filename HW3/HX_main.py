@@ -43,7 +43,6 @@ def Q_FL0(learning_rate = 0.01):  # learning fromzen lake using Q-leaner
             time_list_jr = []
             reward_list.append(np.mean(reward_list_jr))
             reward_list_jr = []
-
         ''' for each episode, the algorithm on Figure 6.7 of Sutton book is executed:
         Initialize S
         Repeat (for each step of this episode)
@@ -53,7 +52,6 @@ def Q_FL0(learning_rate = 0.01):  # learning fromzen lake using Q-leaner
             S <- S'
         until S is terminal 
         '''
-
         # initial observation
         observation = env_FL0.reset()   # (1) Initialize S
         start_time = time.time()
@@ -189,17 +187,20 @@ def SARSA_HW3(learning_rate = 0.01):  # learning fromzen lake using SARSA
             S <- S'; A <- A'
         until S is terminal 
         '''
+
         # initial observation
         observation = env_HW3.reset()   # (1) Initialize S
         start_time = time.time()
         # QL choose action based on observation # (2) choose A from S using policy derived Q (e.g. sigma-greedy)
         action = SARSA.choose_action(str(observation))
+        # print("new episode!, observation is:", observation)
         while True:                     # (3) Repeat (for each step of this episode)
             # # fresh env
             # env_HW3.render()
 
             # QL take action and get next observation and reward  # R(1) Take action A, observe R, S'
-            observation_, reward, done, info = env_FL0.step(action)
+            observation_, reward, done, info = env_HW3.step(action)
+            # print("a, obs_, r, done, info:", action, observation_, reward, done, info)
 
             # QL choose action based on observation  # R(2) choose A' from S' using policy derived Q (e.g. sigma-greedy)
             action_ = SARSA.choose_action(str(observation_))
@@ -214,6 +215,7 @@ def SARSA_HW3(learning_rate = 0.01):  # learning fromzen lake using SARSA
 
             # break while loop when end of this episode
             if done:
+
                 time_list_jr.append(time.time()-start_time)
                 reward_list_jr.append(reward)
                 break

@@ -49,6 +49,7 @@ class SARSA_TABLE:
 
     def learn(self, s, a, r, s_, a_, alpha):  # R(3) Q(S, A) <- Q(S,A) + alpha[R + gamma * Q(S',A') - Q(S,A)
         self.check_state_exist(s_)
+
         q_predict = self.q_table.loc[s, a]
         if s_ != 'terminal':
             q_target = r + self.gamma * self.q_table.loc[s_, a_]  # next state is not terminal
@@ -57,7 +58,9 @@ class SARSA_TABLE:
         # self.q_table.loc[s, a] += self.lr * (q_target - q_predict)  # update , Morvan's original
         self.q_table.loc[s, a] += alpha * (q_target - q_predict)  # update , HX self defined
         if self.verbose >= 2:
-            print('\n Q table is:\n', self.q_table)
+            # print("s,a,r,s_,a_:", s,a,r,s_,a_)
+            # print('\n Q table is:\n', self.q_table)
+            pass
 
     def check_state_exist(self, state):
         if state not in self.q_table.index:
