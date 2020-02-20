@@ -154,27 +154,28 @@ def Q_HW3(learning_rate = 0.01):   # learning fromzen lake using Q-leaner
     print('game over')
     # env.destroy()
 
-def SARSA_HW3(learning_rate = 0.01):  # learning fromzen lake using SARSA
+def SARSA_HW3(num_episode = 10000,
+              learning_rate = 0.01,
+              ):  # learning fromzen lake using SARSA
     S_file = open('SLearner.txt', 'a')
-
+    print(num_episode,learning_rate)
     episode_list = []
     reward_list = []
     reward_list_jr = []
     time_list = []
     time_list_jr = []
 
-    range_end = 10000
+    range_end = num_episode
     for episode in range(range_end):
         # print("episode:", episode)
         # alpha = (1 - math.log(episode+1, 10) / math.log(range_end, 10))/10
         alpha = learning_rate
-        if (episode + 1) % (range_end / 100) == 0:
+        if (episode + 1) % (int(range_end / 10)) == 0:
             print("episode = ", episode + 1, "learnng rate = ", alpha, "reward = ", np.mean(reward_list_jr))
             episode_list.append(episode + 1)
             time_list.append(np.mean(time_list_jr))
             time_list_jr = []
             reward_list.append(np.mean(reward_list_jr))
-
             reward_list_jr = []
 
         ''' for each episode, the algorithm on Figure 6.5 of Sutton book is executed:
@@ -220,7 +221,29 @@ def SARSA_HW3(learning_rate = 0.01):  # learning fromzen lake using SARSA
                 reward_list_jr.append(reward)
                 break
 
-    # S_file.write('episodes:')
+    q_output = SARSA.return_Q_table()
+    print(type(q_output), "=======q_output========\n", q_output)
+
+    q_output.index = q_output.index.astype(int)
+    q_output = q_output.sort_index()
+    print("=======sorted========\n", q_output)
+
+    policy = np.argmax(np.array(q_output), axis=1)
+    print(type(q_output), "=======policy========\n", policy)
+
+    answer_list = []
+    for i in policy:
+        if i == 0:
+            answer_list.append('<')
+        elif i == 1:
+            answer_list.append('v')
+        elif i == 2:
+            answer_list.append('>')
+        elif i == 3:
+            answer_list.append('^')
+    answer_list = ','.join(answer_list)
+    print("====answer:====\n",answer_list)
+     # S_file.write('episodes:')
     # S_file.write(str(episode_list))
     # S_file.write('\n')
     # S_file.write('rewards:')
@@ -242,17 +265,48 @@ def map_reshape(map_string):
 
 if __name__ == "__main__":
 
-    '''You must train your agent with an epsilon-greedy exploration strategy, using NumPy's numpy.random.randint
-function to select random actions'''
-    seed = 1
+    '''You must train your agent with an epsilon-greedy exploration strategy, using NumPy's numpy.random.randint 
+    function to select random actions'''
+    ''' HW3 example 2'''
+    seed = 983459                                 # seed
     np.random.seed(seed)
+    amap = 'SFFFFFFFFFFFFFFFFFFHFFFFG'                      # map
 
-    amap = 'SFFFFHFFFFFFFFFFFFFFFFFFG'
     amap_reshaped = map_reshape(amap)
+    print(amap_reshaped)
     '''FromzenLake env'''
-    # env_FL0 = FrozenLakeEnv(desc=None, map_name='4x4', is_slippery=False)
     env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
+    # env_HW3 = gym.make('FrozenLake-v0', desc=amap_reshaped).unwrapped
     env_HW3.seed(seed)
+    '''FrozenLake unwrapped - SARSA'''
+
+    SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
+                                reward_decay=0.91,    # gamma
+                                e_greedy=0.13,     # epslion
+                                verbose = 1)
+    SARSA_HW3(num_episode = 42271,
+              learning_rate = 0.12)                # alpha
+
+    # ''' HW3 example 1'''
+    # seed = 741684                                 # seed
+    # np.random.seed(seed)
+    # amap = 'SFFFHFFFFFFFFFFG'                      # map
+    # amap_reshaped = map_reshape(amap)
+    # print(amap_reshaped)
+    # '''FromzenLake env'''
+    # env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
+    # # env_HW3 = gym.make('FrozenLake-v0', desc=amap_reshaped).unwrapped
+    # env_HW3.seed(seed)
+    # '''FrozenLake unwrapped - SARSA'''
+    #
+    # SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
+    #                             reward_decay=1.0,    # gamma
+    #                             e_greedy=0.29,     # epslion
+    #                             verbose = 2)
+    # SARSA_HW3(num_episode = 14697,
+    #           learning_rate = 0.25)                # alpha
+
+
 
     '''FrozenLake - Q-learning'''
 
@@ -276,16 +330,7 @@ function to select random actions'''
     #                             verbose =1)
     #     Q_HW3(learning_rate = 0.1)
 
-    '''FrozenLake unwrapped - SARSA'''
 
-    print("SARSA")
-    for i in range(1):
-        SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
-                                # learning_rate=0.1,
-                                reward_decay=0.99,
-                                e_greedy=0.9,
-                                verbose = 2)
-        SARSA_HW3(learning_rate = 0.1)
 
 
 

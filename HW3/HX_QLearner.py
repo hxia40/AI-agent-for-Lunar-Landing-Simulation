@@ -47,7 +47,6 @@ class QLearningTable:
         if self.verbose >= 2:
             print('\n Q table is:\n', self.q_table)
 
-
     def check_state_exist(self, state):
         if state not in self.q_table.index:
             # append new state to q table
