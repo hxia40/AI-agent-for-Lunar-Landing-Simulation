@@ -267,25 +267,25 @@ if __name__ == "__main__":
 
     '''You must train your agent with an epsilon-greedy exploration strategy, using NumPy's numpy.random.randint 
     function to select random actions'''
-    ''' HW3 example 2'''
-    seed = 983459                                 # seed
-    np.random.seed(seed)
-    amap = 'SFFFFFFFFFFFFFFFFFFHFFFFG'                      # map
-
-    amap_reshaped = map_reshape(amap)
-    print(amap_reshaped)
-    '''FromzenLake env'''
-    env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
-    # env_HW3 = gym.make('FrozenLake-v0', desc=amap_reshaped).unwrapped
-    env_HW3.seed(seed)
-    '''FrozenLake unwrapped - SARSA'''
-
-    SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
-                                reward_decay=0.91,    # gamma
-                                e_greedy=0.13,     # epslion
-                                verbose = 1)
-    SARSA_HW3(num_episode = 42271,
-              learning_rate = 0.12)                # alpha
+    # ''' HW3 example 2'''
+    # seed = 983459                                 # seed
+    # np.random.seed(seed)
+    # amap = 'SFFFFFFFFFFFFFFFFFFHFFFFG'                      # map
+    #
+    # amap_reshaped = map_reshape(amap)
+    # print(amap_reshaped)
+    # '''FromzenLake env'''
+    # env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
+    # # env_HW3 = gym.make('FrozenLake-v0', desc=amap_reshaped).unwrapped
+    # env_HW3.seed(seed)
+    # '''FrozenLake unwrapped - SARSA'''
+    #
+    # SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
+    #                             reward_decay=0.91,    # gamma
+    #                             e_greedy=0.13,     # epslion
+    #                             verbose = 1)
+    # SARSA_HW3(num_episode = 42271,
+    #           learning_rate = 0.12)                # alpha
 
     # ''' HW3 example 1'''
     # seed = 741684                                 # seed
@@ -305,6 +305,296 @@ if __name__ == "__main__":
     #                             verbose = 2)
     # SARSA_HW3(num_episode = 14697,
     #           learning_rate = 0.25)                # alpha
+
+    '''actual questions:'''
+
+
+    # ''' HW3 No. 1
+    # amap=SFFHFFHFG,
+    # gamma=1.0,
+    # alpha=0.18,
+    # epsilon=0.24,
+    # n_episodes=49980,
+    # seed=73402
+    # '''     # ^,>,>,<,>,>,<,v,<
+    # seed = 73402                                 # seed
+    # np.random.seed(seed)
+    # amap = 'SFFHFFHFG'                      # map
+    # amap_reshaped = map_reshape(amap)
+    # print(amap_reshaped)
+    # '''FromzenLake env'''
+    # env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
+    # # env_HW3 = gym.make('FrozenLake-v0', desc=amap_reshaped).unwrapped
+    # env_HW3.seed(seed)
+    # '''FrozenLake unwrapped - SARSA'''
+    #
+    # SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
+    #                             reward_decay=1.0,    # gamma
+    #                             e_greedy=0.24,     # epslion
+    #                             verbose = 1)
+    # SARSA_HW3(num_episode = 49980,
+    #           learning_rate = 0.18)                # alpha
+    #
+    #
+    # '''No. 2
+    # Flag this Question
+    # Question 2 10 pts
+    # amap=SFFFHFFFFFFFFFFG,
+    # gamma=1.0,
+    # alpha=0.07,
+    # epsilon=0.26,
+    # n_episodes=22217,
+    # seed=86652
+    # '''   # ^,>,>,>,<,>,>,>,v,>,>,>,v,>,>,<
+    # seed = 86652  # seed
+    # np.random.seed(seed)
+    # amap = 'SFFFHFFFFFFFFFFG'  # map
+    # amap_reshaped = map_reshape(amap)
+    # print(amap_reshaped)
+    # '''FromzenLake env'''
+    # env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
+    # # env_HW3 = gym.make('FrozenLake-v0', desc=amap_reshaped).unwrapped
+    # env_HW3.seed(seed)
+    # '''FrozenLake unwrapped - SARSA'''
+    #
+    # SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
+    #                     reward_decay=1.0,  # gamma
+    #                     e_greedy=0.26,  # epslion
+    #                     verbose=1)
+    # SARSA_HW3(num_episode=22217,
+    #           learning_rate=0.07)  # alpha
+    # '''
+    # No. 3.
+    # Flag this Question
+    # Question 3 10 pts
+    # amap=SFFG,
+    # gamma=0.93,
+    # alpha=0.05,
+    # epsilon=0.18,
+    # n_episodes=28994,
+    # seed=44278
+    # '''   # >,>,>,<
+    # seed = 44278  # seed
+    # np.random.seed(seed)
+    # amap = 'SFFG'  # map
+    # amap_reshaped = map_reshape(amap)
+    # print(amap_reshaped)
+    # '''FromzenLake env'''
+    # env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
+    # # env_HW3 = gym.make('FrozenLake-v0', desc=amap_reshaped).unwrapped
+    # env_HW3.seed(seed)
+    # '''FrozenLake unwrapped - SARSA'''
+    #
+    # SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
+    #                     reward_decay=0.93,  # gamma
+    #                     e_greedy=0.18,  # epslion
+    #                     verbose=1)
+    # SARSA_HW3(num_episode=28994,
+    #           learning_rate=0.05)  # alpha
+    '''
+    4.
+    Flag this Question
+    Question 4 10 pts
+    amap=SFFFHFFFFFFFFFFG,
+    gamma=0.94,
+    alpha=0.06,
+    epsilon=0.23,
+    n_episodes=20314,
+    seed=751139
+    '''           # ^,>,>,v,<,>,>,>,v,v,>,v,v,>,>,<
+    seed = 751139  # seed
+    np.random.seed(seed)
+    amap = 'SFFFHFFFFFFFFFFG'  # map
+    amap_reshaped = map_reshape(amap)
+    print(amap_reshaped)
+    '''FromzenLake env'''
+    env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
+    # env_HW3 = gym.make('FrozenLake-v0', desc=amap_reshaped).unwrapped
+    env_HW3.seed(seed)
+    '''FrozenLake unwrapped - SARSA'''
+
+    SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
+                        reward_decay=0.94,  # gamma
+                        e_greedy=0.23,  # epslion
+                        verbose=1)
+    SARSA_HW3(num_episode=20314,
+              learning_rate=0.06)  # alpha\
+    '''
+    
+    5.
+    Flag this Question
+    Question 5 10 pts
+    amap=SFFFHFFFFFFFFFFG,
+    gamma=0.95,
+    alpha=0.18,
+    epsilon=0.21,
+    n_episodes=28728,
+    seed=607368
+    '''         #  ^,>,>,v,<,>,>,v,v,>,>,v,>,v,>,<
+
+    # seed = 607368  # seed
+    # np.random.seed(seed)
+    # amap = 'SFFFHFFFFFFFFFFG'  # map
+    # amap_reshaped = map_reshape(amap)
+    # print(amap_reshaped)
+    # '''FromzenLake env'''
+    # env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
+    # # env_HW3 = gym.make('FrozenLake-v0', desc=amap_reshaped).unwrapped
+    # env_HW3.seed(seed)
+    # '''FrozenLake unwrapped - SARSA'''
+    #
+    # SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
+    #                     reward_decay=0.95,  # gamma
+    #                     e_greedy=0.21,  # epslion
+    #                     verbose=1)
+    # SARSA_HW3(num_episode=28728,
+    #           learning_rate=0.18)  # alpha
+    '''
+    
+    6.
+    Flag this Question
+    Question 6 10 pts
+    amap=SFFG,
+    gamma=0.97,
+    alpha=0.13,
+    epsilon=0.06,
+    n_episodes=11288,
+    seed=914786
+    '''   # v,v,v,<
+
+    # seed = 914786  # seed
+    # np.random.seed(seed)
+    # amap = 'SFFG'  # map
+    # amap_reshaped = map_reshape(amap)
+    # print(amap_reshaped)
+    # '''FromzenLake env'''
+    # env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
+    # # env_HW3 = gym.make('FrozenLake-v0', desc=amap_reshaped).unwrapped
+    # env_HW3.seed(seed)
+    # '''FrozenLake unwrapped - SARSA'''
+    #
+    # SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
+    #                     reward_decay=0.97,  # gamma
+    #                     e_greedy=0.06,  # epslion
+    #                     verbose=1)
+    # SARSA_HW3(num_episode=11288,
+    #           learning_rate=0.13)  # alpha
+    '''
+    
+    7.
+    Flag this Question
+    Question 7 10 pts
+    amap=SFFFHFFFFFFFFFFG,
+    gamma=0.92,
+    alpha=0.22,
+    epsilon=0.18,
+    n_episodes=44515,
+    seed=974651
+    '''        # ^,>,>,v,<,>,v,v,v,v,<,v,^,^,v,<
+    # seed = 974651  # seed
+    # np.random.seed(seed)
+    # amap = 'SFFFHFFFFFFFFFFG'  # map
+    # amap_reshaped = map_reshape(amap)
+    # print(amap_reshaped)
+    # '''FromzenLake env'''
+    # env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
+    # # env_HW3 = gym.make('FrozenLake-v0', desc=amap_reshaped).unwrapped
+    # env_HW3.seed(seed)
+    # '''FrozenLake unwrapped - SARSA'''
+    #
+    # SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
+    #                     reward_decay=0.92,  # gamma
+    #                     e_greedy=0.18,  # epslion
+    #                     verbose=1)
+    # SARSA_HW3(num_episode=44515,
+    #           learning_rate=0.22)  # alpha
+    '''
+    
+    8.
+    Flag this Question
+    Question 8 10 pts
+    amap=SFFG,
+    gamma=0.99,
+    alpha=0.1,
+    epsilon=0.22,
+    n_episodes=41692,
+    seed=106212
+    '''     #  v,>,v,<
+    # seed = 106212 # seed
+    # np.random.seed(seed)
+    # amap = 'SFFG'  # map
+    # amap_reshaped = map_reshape(amap)
+    # print(amap_reshaped)
+    # '''FromzenLake env'''
+    # env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
+    # # env_HW3 = gym.make('FrozenLake-v0', desc=amap_reshaped).unwrapped
+    # env_HW3.seed(seed)
+    # '''FrozenLake unwrapped - SARSA'''
+    #
+    # SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
+    #                     reward_decay=0.99,  # gamma
+    #                     e_greedy=0.22,  # epslion
+    #                     verbose=1)
+    # SARSA_HW3(num_episode=41692,
+    #           learning_rate=0.1)  # alpha
+    '''
+    
+    9.
+    Flag this Question
+    Question 9 10 pts
+    amap=SFFG,
+    gamma=0.91,
+    alpha=0.09,
+    epsilon=0.22,
+    n_episodes=18909,
+    seed=662797
+    '''   #  >,<,v,<
+    # seed = 662797  # seed
+    # np.random.seed(seed)
+    # amap = 'SFFG'  # map
+    # amap_reshaped = map_reshape(amap)
+    # print(amap_reshaped)
+    # '''FromzenLake env'''
+    # env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
+    # # env_HW3 = gym.make('FrozenLake-v0', desc=amap_reshaped).unwrapped
+    # env_HW3.seed(seed)
+    # '''FrozenLake unwrapped - SARSA'''
+    #
+    # SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
+    #                     reward_decay=0.91,  # gamma
+    #                     e_greedy=0.22,  # epslion
+    #                     verbose=1)
+    # SARSA_HW3(num_episode=18909,
+    #           learning_rate=0.09)  # alpha
+    '''
+
+    10.
+    Flag this Question
+    Question 10 10 pts
+    amap=SFFHFFHFG,
+    gamma=0.93,
+    alpha=0.07,
+    epsilon=0.2,
+    n_episodes=22945,
+    seed=331098'''   #  ^,>,>,<,>,>,<,>,<
+    # seed = 331098  # seed
+    # np.random.seed(seed)
+    # amap = 'SFFHFFHFG'  # map
+    # amap_reshaped = map_reshape(amap)
+    # print(amap_reshaped)
+    # '''FromzenLake env'''
+    # env_HW3 = gym.envs.toy_text.frozen_lake.FrozenLakeEnv(desc=amap_reshaped).unwrapped
+    # # env_HW3 = gym.make('FrozenLake-v0', desc=amap_reshaped).unwrapped
+    # env_HW3.seed(seed)
+    # '''FrozenLake unwrapped - SARSA'''
+    #
+    # SARSA = SARSA_TABLE(actions=list(range(env_HW3.nA)),
+    #                     reward_decay=0.93,  # gamma
+    #                     e_greedy=0.2,  # epslion
+    #                     verbose=1)
+    # SARSA_HW3(num_episode=22945,
+    #           learning_rate=0.07)  # alpha
+
 
 
 
