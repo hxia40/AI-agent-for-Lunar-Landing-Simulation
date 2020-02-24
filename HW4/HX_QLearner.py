@@ -12,19 +12,19 @@ import time
 
 class QLearningTable:
 
-    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, epsilon=0.1, verbose=False):
+    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, verbose=False):
         self.actions = actions  # a list
         self.lr = learning_rate
         self.gamma = reward_decay
-        self.epsilon = epsilon
+        # self.epsilon = epsilon
         self.q_table = pd.DataFrame(columns=self.actions, dtype=np.float64)      # Initialize S
         self.new_state_counter = 0
         self.verbose = verbose
 
-    def choose_action(self, observation):
+    def choose_action(self, observation, epsilon):
         self.check_state_exist(observation)
         # action selection
-        if np.random.uniform() > self.epsilon:
+        if np.random.random() > epsilon:
             # choose best action
             state_action = self.q_table.loc[observation, :]
             # some actions may have the same value, randomly choose on in these actions
