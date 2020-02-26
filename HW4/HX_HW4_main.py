@@ -23,6 +23,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import pandas as pd
+from taxi import TaxiEnv
 
 def Q_HW4(num_episode = 10000,
           learning_rate = 0.01,
@@ -37,12 +38,19 @@ def Q_HW4(num_episode = 10000,
     time_list_jr = []
 
     range_end = num_episode
+    old_epsilon = 1
 
     for episode in range(range_end):
 
         # alpha = (1 - math.log(episode+1, 10) / math.log(range_end, 10))/10
         alpha = learning_rate
-        epsilon = (1 - math.log(episode+1, 10) / math.log(range_end, 10)) * 2
+        epsilon = (1 - math.log(episode + 1, 10) / math.log(range_end, 10)) * 2
+        # if num_episode <= range_end/2:         # first drop the learning rate:
+        #     epsilon = (1 - math.log(episode+1, 10) / math.log(range_end/2, 10)) * 2
+        #     old_epsilon = epsilon
+        # else:
+        #     epsilon = old_epsilon
+
         # epsilon = epsilon
         if (episode + 1) % (range_end / 100) == 0:
             print("episode = ", episode + 1, "learnng rate = ", alpha, "epsilon = ", epsilon, "reward = ", np.mean(reward_list_jr))
@@ -54,6 +62,7 @@ def Q_HW4(num_episode = 10000,
             reward_list_jr = []
         # initial observation
         observation = env_HW4.reset()
+        # print("line 65 obs after reset:", observation)
         start_time = time.time()
         while True:
             # # fresh env
@@ -65,6 +74,7 @@ def Q_HW4(num_episode = 10000,
 
             # QL take action and get next observation and reward
             observation_, reward, done, info = env_HW4.step(action)
+            # print(observation_)
             reward_list_jr.append(reward)
 
             # QL learn from this transition
@@ -190,8 +200,8 @@ if __name__ == "__main__":
     are looking for optimal Q-values you will have to carefully consider your exploration strategy.
     Evaluate your agent using the OpenAI gym 0.14.0 Taxi-v2 environment. Install OpenAI Gym 0.14.0 with
     pip install gym==0.14.0'''
-    env_HW4 = gym.make('Taxi-v2')
-    print(env_HW4.P)
+    # env_HW4 = gym.make('Taxi-v2').unwrapped
+    env_HW4 = TaxiEnv()
 
     '''Taxi-v2 - Q-learning'''
     print("Taxi-v2")
@@ -201,7 +211,7 @@ if __name__ == "__main__":
                                   reward_decay=0.90,   # gamma
                                   # epsilon=0.2,
                                   verbose=True)
-        Q_output = Q_HW4(num_episode = 10000,
+        Q_output = Q_HW4(num_episode = 20000,
                          learning_rate=0.1,
                          epsilon = 0.2)     # function to execute the q-learner, shown above
         print(Q_output)

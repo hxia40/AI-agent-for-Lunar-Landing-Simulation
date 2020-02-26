@@ -32,6 +32,8 @@ class QLearningTable:
         else:
             # choose random action
             action = np.random.choice(self.actions)
+            # print(self.actions)
+            # action = 0
 
         return action
 
