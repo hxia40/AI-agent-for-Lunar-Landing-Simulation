@@ -44,7 +44,7 @@ def Q_HW4(num_episode = 10000,
 
         # alpha = (1 - math.log(episode+1, 10) / math.log(range_end, 10))/10
         alpha = learning_rate
-        epsilon = (1 - math.log(episode + 1, 10) / math.log(range_end, 10)) * 2
+        # epsilon = (1 - math.log(episode + 1, 10) / math.log(range_end, 10)) * 2
         # if num_episode <= range_end/2:         # first drop the learning rate:
         #     epsilon = (1 - math.log(episode+1, 10) / math.log(range_end/2, 10)) * 2
         #     old_epsilon = epsilon
@@ -211,9 +211,9 @@ if __name__ == "__main__":
                                   reward_decay=0.90,   # gamma
                                   # epsilon=0.2,
                                   verbose=True)
-        Q_output = Q_HW4(num_episode = 20000,
+        Q_output = Q_HW4(num_episode = 200000,
                          learning_rate=0.1,
-                         epsilon = 0.2)     # function to execute the q-learner, shown above
+                         epsilon = 0.05)     # function to execute the q-learner, shown above
         print(Q_output)
         Q_output.to_csv('test.csv')
         print(Q_output.iloc[1,1],
