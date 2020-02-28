@@ -44,6 +44,29 @@ def Q_HW4(num_episode = 10000,
 
         # alpha = (1 - math.log(episode+1, 10) / math.log(range_end, 10))/10
         alpha = learning_rate
+        if episode <= 200000:
+            epsilon = 1
+        elif episode <= 210000:
+            epsilon = 0.9
+        elif episode <= 220000:
+            epsilon = 0.8
+        elif episode <= 230000:
+            epsilon = 0.7
+        elif episode <= 240000:
+            epsilon = 0.6
+        elif episode <= 250000:
+            epsilon = 0.5
+        elif episode <= 260000:
+            epsilon = 0.4
+        elif episode <= 270000:
+            epsilon = 0.3
+        elif episode <= 280000:
+            epsilon = 0.2
+        elif episode <= 290000:
+            epsilon = 0.1
+        else:
+            epsilon = 0.01
+
         # epsilon = (1 - math.log(episode + 1, 10) / math.log(range_end, 10)) * 2
         # if num_episode <= range_end/2:         # first drop the learning rate:
         #     epsilon = (1 - math.log(episode+1, 10) / math.log(range_end/2, 10)) * 2
@@ -211,18 +234,18 @@ if __name__ == "__main__":
                                   reward_decay=0.90,   # gamma
                                   # epsilon=0.2,
                                   verbose=True)
-        Q_output = Q_HW4(num_episode = 200000,
+        Q_output = Q_HW4(num_episode = 320000,
                          learning_rate=0.1,
                          epsilon = 0.05)     # function to execute the q-learner, shown above
         print(Q_output)
         Q_output.to_csv('test.csv')
-        print(Q_output.iloc[1,1],
-              Q_output.iloc[462,4], # 11.374402515
-              Q_output.iloc[398, 3], # 4.348907
-              Q_output.iloc[253, 0],  # 0.5856821173
-              Q_output.iloc[377, 1],  # 9.683
-              Q_output.iloc[83, 5]  # 12.8232660372
-              )
+        print(Q_output.iloc[1,1])
+        print(Q_output.iloc[462,4]) # 11.374402515
+        print(Q_output.iloc[398, 3]) # 4.348907
+        print(Q_output.iloc[253, 0])  # 0.5856821173
+        print(Q_output.iloc[377, 1])  # 9.683
+        print(Q_output.iloc[83, 5])  # 12.8232660372
+
 
     '''taxi v2 - SARSA'''
 
