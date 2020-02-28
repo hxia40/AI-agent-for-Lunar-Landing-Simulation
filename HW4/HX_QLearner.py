@@ -31,13 +31,12 @@ class QLearningTable:
             action = np.random.choice(state_action[state_action == np.max(state_action)].index)
         else:
             # choose random action
-<<<<<<< HEAD
+
             action = np.random.randint(len(self.actions))
-=======
+
             action = np.random.choice(self.actions)
             # print(self.actions)
             # action = 0
->>>>>>> 5e761dfdaf2a0b31a1953e31ff471bcb1a9f26ae
 
         return action
 
