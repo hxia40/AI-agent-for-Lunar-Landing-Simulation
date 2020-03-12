@@ -69,15 +69,15 @@ if __name__ == '__main__':
     model.train(training_episodes, stop_good_enough=False)
 
     # Save trained model
-    model.save("trained_model_mem_1000000_batch_100_singleNN_10000.h5")
+    model.save("trained_model_mem_1000000_batch_100_doubleNN_10000.h5")
 
     # Save Rewards list
-    pickle.dump(model.rewards_list, open("list_mem_1000000_batch_100_singleNN_10000.p", "wb"))
-    rewards_list = pickle.load(open("list_mem_1000000_batch_100_singleNN_10000.p", "rb"))
+    pickle.dump(model.rewards_list, open("list_mem_1000000_batch_100_doubleNN_10000.p", "wb"))
+    rewards_list = pickle.load(open("list_mem_1000000_batch_100_doubleNN_10000.p", "rb"))
 
     # plot reward in graph
     reward_df = pd.DataFrame(rewards_list)
-    plot_figure1(reward_df, "Figure_mem_1000000_batch_100_singleNN_10000", "Reward for each training episode", "Episode","Reward")
+    plot_figure1(reward_df, "Figure_mem_1000000_batch_100_doubleNN_10000", "Reward for each training episode", "Episode","Reward")
 
 
 
