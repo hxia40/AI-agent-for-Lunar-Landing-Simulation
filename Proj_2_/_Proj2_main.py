@@ -167,38 +167,38 @@ def run_experiment_for_ed():
     plot_experiments(ed_rewards_pd, "Figure 5: Rewards per episode for different epsilon decay", "Figure 5: Rewards per episode for different epsilon decay values", "Episodes", "Reward", (-600, 300))
 
 if __name__ == '__main__':
-#     env = gym.make('LunarLander-v2')
+    env = gym.make('LunarLander-v2')
 
-#     # set seeds
-#     env.seed(0)
-#     np.random.seed(0)
+    # set seeds
+    env.seed(0)
+    np.random.seed(0)
 
-#     # setting up params
-#     alpha = 0.001
-#     epsilon = 1.0
-#     epsilon_decay = 0.995
-#     gamma = 0.99
-#     training_episodes = 1000
-#     mem_size=100000
-#     mem_batch_size=100
+    # setting up params
+    alpha = 0.001
+    epsilon = 1.0
+    epsilon_decay = 0.995
+    gamma = 0.99
+    training_episodes = 1000
+    mem_size=100000
+    mem_batch_size=100
 
-#     model = DQN(env, alpha, gamma, epsilon, epsilon_decay, mem_size, mem_batch_size)
-#     model.train(training_episodes, stop_good_enough=False)
+    model = DQN(env, alpha, gamma, epsilon, epsilon_decay, mem_size, mem_batch_size)
+    model.train(training_episodes, stop_good_enough=False)
 
-#     # Save trained model
-#     model.save("trained_model_mem_1000000_batch_100_doubleNN_10000.h5")
+    # Save trained model
+    model.save("trained_model_mem_100000_batch_100_doubleNN_10000.h5")
 
-#     # Save Rewards list
-#     pickle.dump(model.rewards_list, open("list_mem_1000000_batch_100_doubleNN_10000.p", "wb"))
-#     rewards_list = pickle.load(open("list_mem_1000000_batch_100_doubleNN_10000.p", "rb"))
+    # Save Rewards list
+    pickle.dump(model.rewards_list, open("list_mem_100000_batch_100_doubleNN_10000.p", "wb"))
+    rewards_list = pickle.load(open("list_mem_100000_batch_100_doubleNN_10000.p", "rb"))
 
-#     # plot reward in graph
-#     reward_df = pd.DataFrame(rewards_list)
-#     plot_figure1(reward_df, "Figure_mem_1000000_batch_100_doubleNN_10000", "Reward for each training episode", "Episode","Reward")
+    # plot reward in graph
+    reward_df = pd.DataFrame(rewards_list)
+    plot_figure1(reward_df, "Figure_mem_100000_batch_100_doubleNN_10000", "Reward for each training episode", "Episode","Reward")
 
-#     Run experiments for hyper-parameter
-    run_experiment_for_lr()
-    run_experiment_for_ed()
-    run_experiment_for_gamma()
+# #     Run experiments for hyper-parameter
+#     run_experiment_for_lr()
+#     run_experiment_for_ed()
+#     run_experiment_for_gamma()
 
 
