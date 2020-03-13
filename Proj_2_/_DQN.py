@@ -34,8 +34,8 @@ class DQN:
 
     def create_model(self):
         model = Sequential()
-        model.add(Dense(10000, input_dim=self.state_dimension, activation=relu))
-        model.add(Dense(10000, activation=relu))
+        model.add(Dense(100, input_dim=self.state_dimension, activation=relu))
+        model.add(Dense(100, activation=relu))
 #         model.add(Dense(100, activation=relu))
         model.add(Dense(self.action_num, activation=linear))
         model.compile(loss=mean_squared_error,optimizer=Adam(learning_rate=self.alpha))
