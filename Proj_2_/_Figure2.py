@@ -53,10 +53,10 @@ def test_trained_model(trained_model):
 if __name__ == '__main__':
 
 
-    trained_model = load_model("train_model_mem_100_batch_100_singleNN_100.h5")
+    trained_model = load_model("train_model_mem_1000_batch_100_doubleNN_100.h5")
     test_rewards = test_trained_model(trained_model)
 
-    plot_figure2(pd.DataFrame(test_rewards), "Figure2_mem_100_batch_100_singleNN_100","Episode", "Reward")
+    plot_figure2(pd.DataFrame(test_rewards), "Figure2_mem_1000_batch_100_doubleNN_100","Episode", "Reward")
     print("Game over")
 
 
