@@ -14,9 +14,7 @@ class DQN:
     def __init__(self, env, alpha, gamma, epsilon, epsilon_decay, mem_size, mem_batch_size):
 
         self.env = env
-        self.counter = 0
-        # somehow, if i dont replace the state dimension and action numbers with a sefl.* superparameter, 
-        # the q-learner converge toward worse performance
+        self.muter = 0
         self.state_dimension = env.observation_space.shape[0]
         self.action_num = env.action_space.n
 
@@ -34,8 +32,8 @@ class DQN:
 
     def create_model(self):
         model = Sequential()
-        model.add(Dense(10000, input_dim=self.state_dimension, activation=relu))
-        model.add(Dense(10000, activation=relu))
+        model.add(Dense(100, input_dim=self.state_dimension, activation=relu))
+#         model.add(Dense(100, activation=relu))
 #         model.add(Dense(100, activation=relu))
         model.add(Dense(self.action_num, activation=linear))
         model.compile(loss=mean_squared_error,optimizer=Adam(learning_rate=self.alpha))
@@ -47,14 +45,14 @@ class DQN:
         
     def learn_from_replay(self):
         # memory have to be larger than batch_size
-        if len(self.memory) < self.batch_size or self.counter != 0: 
+        if len(self.memory) < self.batch_size or self.muter != 0: 
             return
         # from Gupta: Early Stopping is the practice to stop the neural networks from overtraining. 
         # Avoid training the model for a specific episode if the average of the last 10 rewards is more than 180.
         if np.mean(self.rewards_list[-10:]) > 180:   
             return
         samples = random.sample(self.memory, self.batch_size)
-        states, actions, rewards, state_s, dones = self.get_attribues_from_samples(samples)
+        states, actions, rewards, state_s, dones = self.sample_aliquoter(samples)
         # This calculate the target part of the Q learner (i.e. the "r + gamma * argmax" part). 
         # Using (1- dones), rather than if, to perform vectorized conditional test.
         targets = \
@@ -64,27 +62,25 @@ class DQN:
         target_vec[[indexes], [actions]] = targets
         self.model.fit(states, target_vec, epochs=1, verbose=0)
                 
-    # from Gupta. By attaching all samples into a numpy array, calculations are vectorized and thus save computation power.
-    def get_attribues_from_samples(self, samples):
+    # idea from Gupta. aiquoting states/actions/etc. into their respective numpy array, thus vectorize them.
+    def sample_aliquoter(self, samples):
+
         states = np.array([i[0] for i in samples])
         actions = np.array([i[1] for i in samples])
         rewards = np.array([i[2] for i in samples])
         state_s = np.array([i[3] for i in samples])
         dones = np.array([i[4] for i in samples])
+        
         states = np.squeeze(states)
         state_s = np.squeeze(state_s)
-        return np.squeeze(states), actions, rewards, state_s, dones
+
+        return states, actions, rewards, state_s, dones
 
     def perform_action(self, state):
         if np.random.rand() < self.epsilon:
             return random.randrange(self.action_num)
         else:
             return np.argmax(self.model.predict(state)[0])
-
-    def update_counter(self):
-        self.counter += 1
-        step_size = 5
-        self.counter = self.counter % step_size
 
     def save(self, name):
         self.model.save(name)
@@ -107,18 +103,19 @@ class DQN:
                 
                 episode_reward += reward
                 state = state_
-                self.update_counter()
+                # this muter mutes learning process 4/5 of the time, 
+                # providing a more stable updates so the algorithm does not always learn "on the fly"
+                self.muter += 1
+                self.muter = self.muter % 5
                 self.learn_from_replay()
                 if done:
                     break
                     
             self.rewards_list.append(episode_reward)
 
-            # Epsilon decay 
             self.epsilon *= self.epsilon_decay
             self.epsilon = max(self.epsilon_min, self.epsilon)
 
-            # Check for breaking condition
             mean_score_last_hundred_episode = np.mean(self.rewards_list[-100:])
             if mean_score_last_hundred_episode > 200 and stop_good_enough:
                 print("Training Complete!")
